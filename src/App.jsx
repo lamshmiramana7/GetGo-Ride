@@ -33,7 +33,7 @@ export const useLanguage = () => useContext(LanguageContext);
 
 // ── App Shell ────────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState(MOCK_USER);
+  const [user, setUser] = useState(null);
   const [activeTrip, setActiveTrip] = useState(null);
 
   // Theme — default dark, persisted in localStorage

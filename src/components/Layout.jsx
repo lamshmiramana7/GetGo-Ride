@@ -12,10 +12,10 @@ export default function Layout() {
   const { t } = useLanguage();
 
   const NAV_ITEMS = [
-    { path: '/', label: 'Home', icon: Home },
-    { path: '/history', label: 'Trips', icon: Clock },
-    { path: '/travel', label: 'Travel', icon: Compass },
-    { path: '/profile', label: 'Profile', icon: User },
+    { path: '/', label: t('home') || 'Home', icon: Home },
+    { path: '/history', label: t('trips') || 'Trips', icon: Clock },
+    { path: '/travel', label: t('travel') || 'Travel', icon: Compass },
+    { path: '/profile', label: t('profile') || 'Profile', icon: User },
   ];
 
   return (

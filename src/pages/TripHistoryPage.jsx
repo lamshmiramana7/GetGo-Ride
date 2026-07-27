@@ -2,29 +2,37 @@ import React, { useState } from 'react';
 import { Car, Package, Compass, Calendar, MapPin, Check, Star, X } from 'lucide-react';
 import { MOCK_TRIPS } from '../data/mockData';
 import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
+import { useLanguage } from '../App';
 
 const VEHICLE_IMAGES = VEHICLE_BASE64;
-const FILTERS = ['All', 'Rides', 'Parcels', 'Travel'];
 
 export default function TripHistoryPage() {
+  const { t } = useLanguage();
   const [filter, setFilter] = useState('All');
   const [selected, setSelected] = useState(null);
 
-  const filtered = MOCK_TRIPS.filter(t => {
-    if (filter === 'Rides') return t.type === 'ride';
-    if (filter === 'Parcels') return t.type === 'parcel';
-    if (filter === 'Travel') return t.type === 'travel';
+  const FILTERS = [
+    { id: 'All', label: 'All' },
+    { id: 'Rides', label: t('trips') || 'Rides' },
+    { id: 'Parcels', label: t('sendParcel') || 'Parcels' },
+    { id: 'Travel', label: t('travel') || 'Travel' },
+  ];
+
+  const filtered = MOCK_TRIPS.filter(tr => {
+    if (filter === 'Rides') return tr.type === 'ride';
+    if (filter === 'Parcels') return tr.type === 'parcel';
+    if (filter === 'Travel') return tr.type === 'travel';
     return true;
   });
 
-  const totalSpent = MOCK_TRIPS.reduce((s, t) => s + t.fare, 0);
+  const totalSpent = MOCK_TRIPS.reduce((s, tr) => s + tr.fare, 0);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
       <div>
         <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-          Trip History
+          {t('recentTrips') || 'Trip History'}
         </h1>
         <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
           Your past rides, parcel deliveries & intercity travel receipts
@@ -50,15 +58,15 @@ export default function TripHistoryPage() {
       {/* Filter Tabs */}
       <div style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
         {FILTERS.map(f => {
-          const isAct = filter === f;
+          const isAct = filter === f.id;
           return (
             <button
-              key={f}
-              onClick={() => setFilter(f)}
+              key={f.id}
+              onClick={() => setFilter(f.id)}
               className={isAct ? 'badge-flat-green' : 'badge-flat'}
               style={{ padding: '8px 16px', cursor: 'pointer', fontSize: 14 }}
             >
-              {f}
+              {f.label}
             </button>
           );
         })}

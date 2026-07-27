@@ -8,7 +8,7 @@ const LANGUAGES = ['English', 'தமிழ் (Tamil)', 'हिन्दी (Hi
 export default function ProfilePage() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [activeModal, setActiveModal] = useState(null); // 'saved' | 'payment' | 'language' | 'safety' | 'help'
   const [addresses, setAddresses] = useState(SAVED_ADDRESSES);
   const [newLabel, setNewLabel] = useState('');
@@ -57,7 +57,7 @@ export default function ProfilePage() {
             {userPhone}
           </p>
           <div className="badge-flat-green" style={{ marginTop: 8 }}>
-            <ShieldCheck size={14} /> Verified Profile
+            <ShieldCheck size={14} /> {t('myProfile') || 'Verified Profile'}
           </div>
         </div>
       </div>
@@ -65,7 +65,7 @@ export default function ProfilePage() {
       {/* User Stats Pills */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
         <div className="flat-card" style={{ padding: 12, textAlign: 'center' }}>
-          <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Total Rides</div>
+          <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{t('trips') || 'Total Rides'}</div>
           <div className="text-subtitle" style={{ color: 'var(--text-primary)', marginTop: 2 }}>47</div>
         </div>
         <div className="flat-card" style={{ padding: 12, textAlign: 'center' }}>
@@ -81,12 +81,12 @@ export default function ProfilePage() {
       {/* Settings Options List */}
       <div className="flat-card" style={{ padding: 8, display: 'flex', flexDirection: 'column', gap: 4 }}>
         {[
-          { id: 'theme', label: `Theme (${theme === 'dark' ? 'Dark Mode' : 'Light Mode'})`, icon: theme === 'dark' ? Sun : Moon, action: toggleTheme },
-          { id: 'language', label: `Language (${language})`, icon: Globe, action: () => setActiveModal('language') },
-          { id: 'saved', label: 'Saved Addresses', icon: MapPin, action: () => setActiveModal('saved') },
-          { id: 'payment', label: 'Payment Methods', icon: CreditCard, action: () => setActiveModal('payment') },
-          { id: 'safety', label: 'Safety & Security', icon: ShieldCheck, action: () => setActiveModal('safety') },
-          { id: 'help', label: 'Help & Support', icon: HelpCircle, action: () => setActiveModal('help') },
+          { id: 'theme', label: `${theme === 'dark' ? (t('lightMode') || 'Light Mode') : (t('darkMode') || 'Dark Mode')}`, icon: theme === 'dark' ? Sun : Moon, action: toggleTheme },
+          { id: 'language', label: `${t('language') || 'Language'} (${language})`, icon: Globe, action: () => setActiveModal('language') },
+          { id: 'saved', label: t('savedAddresses') || 'Saved Addresses', icon: MapPin, action: () => setActiveModal('saved') },
+          { id: 'payment', label: t('paymentMethods') || 'Payment Methods', icon: CreditCard, action: () => setActiveModal('payment') },
+          { id: 'safety', label: t('safetySettings') || 'Safety & Security', icon: ShieldCheck, action: () => setActiveModal('safety') },
+          { id: 'help', label: t('helpSupport') || 'Help & Support', icon: HelpCircle, action: () => setActiveModal('help') },
         ].map(item => {
           const Icon = item.icon;
           return (
@@ -124,7 +124,7 @@ export default function ProfilePage() {
         style={{ color: '#EF4444', borderColor: 'var(--border-strong)' }}
       >
         <LogOut size={18} />
-        <span>Sign Out Account</span>
+        <span>{t('logout') || 'Sign Out Account'}</span>
       </button>
 
       {/* ── MODALS ── */}

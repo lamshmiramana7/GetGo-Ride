@@ -176,12 +176,12 @@ export default function LoginPage() {
 
         {/* User's Uploaded Logo Image */}
         <div style={{
-          width: 200,
-          maxHeight: 200,
-          borderRadius: 24,
+          width: 220,
+          height: 220,
+          borderRadius: 28,
           overflow: 'hidden',
-          boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
-          border: '2px solid rgba(255,255,255,0.2)',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.4)',
+          border: '2px solid rgba(255,255,255,0.25)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -190,7 +190,7 @@ export default function LoginPage() {
           <img
             src={logoImg}
             alt="GetGo Ride Logo"
-            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           />
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { MOCK_USER } from './data/mockData';
 import { TRANSLATIONS } from './data/translations';
 
@@ -33,7 +33,7 @@ export const useLanguage = () => useContext(LanguageContext);
 
 // ── App Shell ────────────────────────────────────────────────
 export default function App() {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(MOCK_USER);
   const [activeTrip, setActiveTrip] = useState(null);
 
   // Theme — default dark, persisted in localStorage
@@ -74,7 +74,7 @@ export default function App() {
       <ThemeContext.Provider value={{ theme, toggleTheme }}>
         <AuthContext.Provider value={{ user, login, logout }}>
           <TripContext.Provider value={{ activeTrip, setActiveTrip }}>
-            <BrowserRouter>
+            <HashRouter>
               <Routes>
                 {/* Public */}
                 <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
@@ -86,6 +86,7 @@ export default function App() {
                   <Route path="parcel" element={<ParcelPage />} />
                   <Route path="travel" element={<TravelPage />} />
                   <Route path="history" element={<TripHistoryPage />} />
+                  <Route path="trips" element={<TripHistoryPage />} />
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="chat" element={<ChatPage />} />
                 </Route>
@@ -93,7 +94,7 @@ export default function App() {
                 {/* Fallback */}
                 <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
               </Routes>
-            </BrowserRouter>
+            </HashRouter>
           </TripContext.Provider>
         </AuthContext.Provider>
       </ThemeContext.Provider>

@@ -10,6 +10,7 @@ export default function ProfilePage() {
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
   const [activeModal, setActiveModal] = useState(null); // 'saved' | 'payment' | 'language' | 'safety' | 'help'
+  const [selectedPaymentId, setSelectedPaymentId] = useState('pm001');
   const [addresses, setAddresses] = useState(SAVED_ADDRESSES);
   const [newLabel, setNewLabel] = useState('');
   const [newAddress, setNewAddress] = useState('');
@@ -204,23 +205,42 @@ export default function ProfilePage() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Payment Options</h2>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('paymentMethods') || 'Payment Options'}</h2>
               <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
                 <X size={18} />
               </button>
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {PAYMENT_METHODS.map(pm => (
-                <div key={pm.id} style={{ padding: 14, backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: 12 }}>
-                  <CreditCard size={20} color="var(--brand-green-text)" />
-                  <div>
-                    <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{pm.label}</div>
-                    <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{pm.detail}</div>
+              {PAYMENT_METHODS.map(pm => {
+                const isSel = selectedPaymentId === pm.id;
+                return (
+                  <div
+                    key={pm.id}
+                    onClick={() => setSelectedPaymentId(pm.id)}
+                    className={isSel ? 'flat-card-selected' : 'flat-card-interactive'}
+                    style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
+                  >
+                    <CreditCard size={20} color={isSel ? 'var(--brand-green-text)' : 'var(--text-secondary)'} />
+                    <div style={{ flex: 1 }}>
+                      <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{pm.label}</div>
+                      <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{pm.detail}</div>
+                    </div>
+                    {isSel ? (
+                      <span className="badge-flat-green" style={{ fontSize: 11 }}>
+                        <Check size={12} /> Default
+                      </span>
+                    ) : (
+                      <button className="btn-text" style={{ fontSize: 12, padding: 0 }}>Set Default</button>
+                    )}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
+
+            <button className="btn-primary" onClick={() => setActiveModal(null)}>
+              Save Payment Preference
+            </button>
           </div>
         </div>
       )}

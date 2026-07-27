@@ -89,13 +89,13 @@ export default function LoginPage() {
       }}>
         {/* Header featuring exact uploaded GetGo RIDE logo picture */}
         <div style={{
-          backgroundColor: '#0F172A',
-          padding: 0,
+          backgroundColor: '#005826',
+          padding: '24px 20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          justifyContent: 'center',
           textAlign: 'center',
-          overflow: 'hidden',
           borderBottom: '1px solid var(--border)',
         }}>
           <img
@@ -103,9 +103,12 @@ export default function LoginPage() {
             alt="GetGo Ride Official Logo"
             style={{
               width: '100%',
+              maxWidth: 280,
               height: 'auto',
               maxHeight: 280,
-              objectFit: 'cover',
+              borderRadius: 16,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+              objectFit: 'contain',
               display: 'block',
             }}
           />

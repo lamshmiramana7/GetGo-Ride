@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useLanguage } from '../App';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
-import { LOGO_BASE64 } from '../assets/logoBase64';
 import { LOGIN_HERO_BASE64 } from '../assets/loginHeroBase64';
 
 export default function LoginPage() {
@@ -87,35 +86,33 @@ export default function LoginPage() {
         boxShadow: 'var(--shadow-flat)',
         overflow: 'hidden',
       }}>
-        {/* Header featuring exact uploaded GetGo RIDE logo picture */}
+        {/* Full Seamless Green Banner Header featuring exact uploaded GetGo RIDE logo picture */}
         <div style={{
-          backgroundColor: '#005826',
-          padding: '24px 20px',
+          backgroundColor: '#044C23',
+          padding: '28px 20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           textAlign: 'center',
-          borderBottom: '1px solid var(--border)',
         }}>
           <img
             src={LOGIN_HERO_BASE64}
-            alt="GetGo Ride Official Logo"
+            alt="GetGo Ride Official Brand Logo"
             style={{
               width: '100%',
-              maxWidth: 280,
+              maxWidth: 320,
               height: 'auto',
-              maxHeight: 280,
-              borderRadius: 16,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-              objectFit: 'contain',
               display: 'block',
+              borderRadius: 12,
+              boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
+              objectFit: 'contain'
             }}
           />
         </div>
 
         {/* Language selector inside login */}
-        <div style={{ padding: '12px 24px 0', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ padding: '14px 24px 0', display: 'flex', justifyContent: 'flex-end' }}>
           <select
             value={language}
             onChange={e => setLanguage(e.target.value)}

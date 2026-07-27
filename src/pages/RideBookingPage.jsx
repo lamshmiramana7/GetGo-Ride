@@ -5,6 +5,13 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MOCK_DRIVERS, VEHICLE_CATEGORIES, SAVED_ADDRESSES, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
+import rideBannerImg from '../assets/ride_banner.png';
+import bikeImg from '../assets/bike.png';
+import autoImg from '../assets/auto.png';
+import carImg from '../assets/car.png';
+import vanImg from '../assets/van.png';
+
+const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
 
 // Fix Leaflet default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -158,7 +165,7 @@ export default function RideBookingPage() {
       {/* Hero Banner & Inputs */}
       <div style={{ flex: 1, padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
         <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 95, position: 'relative', border: '1.5px solid rgba(0,166,81,0.3)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }}>
-          <img src="assets/ride_banner.png" alt="Book Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={rideBannerImg} alt="Book Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ fontFamily: 'Poppins', fontWeight: 800, fontSize: '1.0625rem', color: '#fff' }}>Instant City Rides</div>
             <div style={{ fontSize: '0.75rem', color: '#00A651', fontWeight: 600, marginTop: 2 }}>⚡ Fast Bike & Auto Pickups · Flat Rate</div>
@@ -258,11 +265,7 @@ export default function RideBookingPage() {
           {VEHICLE_CATEGORIES.map(cat => (
             <div key={cat.id} id={`vehicle-${cat.id}`} className={`vehicle-cat-btn ${selectedVehicle === cat.id ? 'selected' : ''}`} onClick={() => setSelectedVehicle(cat.id)}>
               <div style={{ width: 50, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 4 }}>
-                {cat.image ? (
-                  <img src={cat.image} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-                ) : (
-                  <span style={{ fontSize: '1.75rem' }}>{cat.icon}</span>
-                )}
+                <img src={VEHICLE_IMAGES[cat.id] || carImg} alt={cat.label} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
               </div>
               <div className="vehicle-cat-label">{cat.label}</div>
               <div className="vehicle-cat-capacity">{cat.description}</div>
@@ -339,7 +342,7 @@ export default function RideBookingPage() {
           {/* Anonymous driver preview */}
           <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1.5px solid var(--border)', padding: 20, textAlign: 'center' }}>
             <div style={{ width: 70, height: 48, margin: '0 auto 10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={VEHICLE_CATEGORIES.find(c => c.id === (selectedVehicle || 'car'))?.image || 'assets/car.png'} alt="Vehicle" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }} />
+              <img src={VEHICLE_IMAGES[selectedVehicle || 'car'] || carImg} alt="Vehicle" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }} />
             </div>
             <div style={{ fontFamily: 'Poppins', fontSize: '1.0625rem', fontWeight: 700 }}>Driver assigned</div>
             <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: 4 }}>Identity revealed after confirmation</div>
@@ -534,7 +537,7 @@ function AnonymousDriverCard({ driver, selected, onSelect, dropCoords, pickupCoo
   return (
     <div id={`driver-card-${driver.id}`} className={`driver-card ${selected ? 'selected' : ''}`} onClick={onSelect}>
       <div className="driver-vehicle-icon" style={{ width: 46, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-input)', borderRadius: 10, padding: 4 }}>
-        <img src={`assets/${driver.vehicle}.png`} alt={driver.vehicle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+        <img src={VEHICLE_IMAGES[driver.vehicle] || carImg} alt={driver.vehicle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
       </div>
       <div className="driver-info">
         <div className="driver-vehicle-type">{driver.vehicleModel}</div>

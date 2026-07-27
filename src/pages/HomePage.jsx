@@ -4,6 +4,10 @@ import { useAuth, useTheme, useLanguage } from '../App';
 import { MOCK_USER, MOCK_TRIPS, PROMO_BANNERS, SAVED_ADDRESSES, NOTIFICATIONS } from '../data/mockData';
 import NotificationPanel from '../components/NotificationPanel';
 import GetGoLogo from '../components/GetGoLogo';
+import logoImg from '../assets/logo.png';
+import rideBannerImg from '../assets/ride_banner.png';
+import parcelBannerImg from '../assets/parcel_banner.png';
+import travelBannerImg from '../assets/travel_banner.png';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -39,7 +43,7 @@ export default function HomePage() {
           <button id="menu-btn" onClick={openMenu} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 38, height: 38, borderRadius: 10, fontSize: '1.125rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             ☰
           </button>
-          <img src="logo.png" alt="GetGo Ride" style={{ height: 38, objectFit: 'contain', borderRadius: 8 }} />
+          <img src={logoImg} alt="GetGo Ride" style={{ height: 38, objectFit: 'contain', borderRadius: 8 }} />
           <div style={{ display: 'flex', gap: 8 }}>
             <button
               id="theme-toggle-home-btn"
@@ -50,19 +54,17 @@ export default function HomePage() {
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
             <button
-              id="notification-btn"
+              id="notif-toggle-home-btn"
               onClick={() => setShowNotifs(true)}
               style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 38, height: 38, borderRadius: 10, fontSize: '1.125rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative' }}
             >
               🔔
-              {unreadCount > 0 && (
-                <div style={{ position: 'absolute', top: 5, right: 5, width: 8, height: 8, background: '#EF4444', borderRadius: '50%', border: '1.5px solid transparent' }} />
-              )}
+              <span className="notification-badge-dot" />
             </button>
           </div>
         </div>
 
-        <div style={{ position: 'relative', zIndex: 2, marginTop: 16 }}>
+        <div style={{ marginTop: 24, position: 'relative', zIndex: 2 }}>
           <p className="home-greeting">{t(greetingKey)},</p>
           <p className="home-name">{firstName} 👋</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 10 }}>
@@ -76,21 +78,21 @@ export default function HomePage() {
       <div className="service-cards animate-slideUp">
         <div id="book-ride-card" className="service-card" onClick={() => navigate('/ride')}>
           <div style={{ width: 60, height: 60, borderRadius: 18, background: 'rgba(0,166,81,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1.5px solid rgba(0,166,81,0.3)', overflow: 'hidden', boxShadow: '0 4px 12px rgba(0,166,81,0.2)' }}>
-            <img src="assets/ride_banner.png" alt="Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={rideBannerImg} alt="Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="service-card-label">{t('bookRide')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bike · Auto · Car · Van</div>
         </div>
         <div id="send-parcel-card" className="service-card" onClick={() => navigate('/parcel')}>
           <div style={{ width: 60, height: 60, borderRadius: 18, background: 'rgba(37,99,235,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1.5px solid rgba(37,99,235,0.3)', overflow: 'hidden', boxShadow: '0 4px 12px rgba(37,99,235,0.2)' }}>
-            <img src="assets/parcel_banner.png" alt="Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={parcelBannerImg} alt="Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="service-card-label">{t('sendParcel')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bike delivery</div>
         </div>
         <div id="travel-card" className="service-card" onClick={() => navigate('/travel')}>
           <div style={{ width: 60, height: 60, borderRadius: 18, background: 'rgba(124,58,237,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1.5px solid rgba(124,58,237,0.3)', overflow: 'hidden', boxShadow: '0 4px 12px rgba(124,58,237,0.2)' }}>
-            <img src="assets/travel_banner.png" alt="Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={travelBannerImg} alt="Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div className="service-card-label">{t('travel')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bus · Flights · Train</div>

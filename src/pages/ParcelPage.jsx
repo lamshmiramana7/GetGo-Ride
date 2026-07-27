@@ -4,6 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MOCK_DRIVERS, SAVED_ADDRESSES, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
+import parcelBannerImg from '../assets/parcel_banner.png';
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -114,7 +115,7 @@ export default function ParcelPage() {
 
       <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 100, position: 'relative', border: '1.5px solid rgba(0,166,81,0.3)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }}>
-          <img src="assets/parcel_banner.png" alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img src={parcelBannerImg} alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <div style={{ fontFamily: 'Poppins', fontWeight: 800, fontSize: '1.0625rem', color: '#fff' }}>Express Parcel Courier</div>
             <div style={{ fontSize: '0.75rem', color: '#00A651', fontWeight: 600, marginTop: 2 }}>⚡ Bike delivery only · OTP Protected</div>

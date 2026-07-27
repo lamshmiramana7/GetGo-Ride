@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BUS_ROUTES } from '../data/mockData';
+import travelBannerImg from '../assets/travel_banner.png';
 
 const POPULAR_ROUTES = [
   { from: 'Chennai', to: 'Madurai' },
@@ -74,7 +75,7 @@ function BusTab() {
   if (step === 'search') return (
     <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
       <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 100, position: 'relative', border: '1.5px solid rgba(124,58,237,0.3)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }}>
-        <img src="assets/travel_banner.png" alt="Intercity Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <img src={travelBannerImg} alt="Intercity Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ fontFamily: 'Poppins', fontWeight: 800, fontSize: '1.0625rem', color: '#fff' }}>Intercity Travel Booking</div>
           <div style={{ fontSize: '0.75rem', color: '#A78BFA', fontWeight: 600, marginTop: 2 }}>🚍 Volvo Buses · ✈️ Flights · 🚆 IRCTC Trains</div>

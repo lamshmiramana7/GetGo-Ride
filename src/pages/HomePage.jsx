@@ -58,6 +58,14 @@ export default function HomePage() {
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
+            onClick={() => navigate('/login')}
+            className="btn-secondary"
+            style={{ padding: '6px 12px', fontSize: 13, gap: 6, borderRadius: 'var(--radius-md)' }}
+            title="Open Login Screen"
+          >
+            <span>Login Page</span>
+          </button>
+          <button
             onClick={toggleTheme}
             className="btn-secondary"
             style={{ width: 40, height: 40, padding: 0, borderRadius: 'var(--radius-md)' }}

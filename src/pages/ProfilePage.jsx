@@ -118,10 +118,19 @@ export default function ProfilePage() {
         })}
       </div>
 
+      {/* View Login Page Button */}
+      <button
+        className="btn-primary"
+        onClick={() => { logout(); navigate('/login'); }}
+        style={{ backgroundColor: '#005826', color: '#FFFFFF' }}
+      >
+        <span>View Login Page with GetGo Logo</span>
+      </button>
+
       {/* Logout Button */}
       <button
         className="btn-secondary"
-        onClick={logout}
+        onClick={() => { logout(); navigate('/login'); }}
         style={{ color: '#EF4444', borderColor: 'var(--border-strong)' }}
       >
         <LogOut size={18} />

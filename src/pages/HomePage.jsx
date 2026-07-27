@@ -8,6 +8,14 @@ import logoImg from '../assets/logo.png';
 import rideBannerImg from '../assets/ride_banner.png';
 import parcelBannerImg from '../assets/parcel_banner.png';
 import travelBannerImg from '../assets/travel_banner.png';
+import bikeImg from '../assets/bike.png';
+import autoImg from '../assets/auto.png';
+import carImg from '../assets/car.png';
+import vanImg from '../assets/van.png';
+import parcelImg from '../assets/parcel.png';
+import busImg from '../assets/bus.png';
+
+const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg, parcel: parcelImg, bus: busImg };
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -201,12 +209,12 @@ export default function HomePage() {
 }
 
 function TripMini({ trip, onClick }) {
-  const icons = { bike: '🏍️', auto: '🛺', car: '🚗', van: '🚐', bus: '🚌' };
+  const vehicleImg = VEHICLE_IMAGES[trip.vehicle] || (trip.type === 'parcel' ? parcelImg : trip.type === 'travel' ? busImg : carImg);
   const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
   return (
     <div className="trip-card" onClick={onClick} id={`trip-mini-${trip.id}`}>
-      <div style={{ width: 42, height: 42, background: 'var(--bg-input)', borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem', flexShrink: 0 }}>
-        {icons[trip.vehicle]}
+      <div style={{ width: 46, height: 46, background: 'var(--bg-input)', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 5, overflow: 'hidden' }}>
+        <img src={vehicleImg} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>

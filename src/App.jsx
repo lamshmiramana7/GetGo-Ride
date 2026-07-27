@@ -76,23 +76,24 @@ export default function App() {
           <TripContext.Provider value={{ activeTrip, setActiveTrip }}>
             <HashRouter>
               <Routes>
-                {/* Public Login Route - Always renders LoginPage */}
-                <Route path="/login" element={<LoginPage />} />
-
-                {/* Protected App Routes */}
-                <Route element={user ? <Layout /> : <LoginPage />}>
-                  <Route index element={<HomePage />} />
-                  <Route path="ride" element={<RideBookingPage />} />
-                  <Route path="parcel" element={<ParcelPage />} />
-                  <Route path="travel" element={<TravelPage />} />
-                  <Route path="history" element={<TripHistoryPage />} />
-                  <Route path="trips" element={<TripHistoryPage />} />
-                  <Route path="profile" element={<ProfilePage />} />
-                  <Route path="chat" element={<ChatPage />} />
-                </Route>
-
-                {/* Fallback */}
-                <Route path="*" element={<LoginPage />} />
+                {user ? (
+                  /* Authenticated User Routes */
+                  <Route element={<Layout />}>
+                    <Route index element={<HomePage />} />
+                    <Route path="ride" element={<RideBookingPage />} />
+                    <Route path="parcel" element={<ParcelPage />} />
+                    <Route path="travel" element={<TravelPage />} />
+                    <Route path="history" element={<TripHistoryPage />} />
+                    <Route path="trips" element={<TripHistoryPage />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="chat" element={<ChatPage />} />
+                    <Route path="login" element={<LoginPage />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                  </Route>
+                ) : (
+                  /* Unauthenticated / Login Page for All Routes */
+                  <Route path="*" element={<LoginPage />} />
+                )}
               </Routes>
             </HashRouter>
           </TripContext.Provider>

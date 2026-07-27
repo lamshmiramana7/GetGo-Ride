@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, Package, Compass, MapPin, Search, ArrowRight, Clock, ShieldCheck, Sun, Moon, Bell, ChevronRight, Home as HomeIcon, Briefcase } from 'lucide-react';
-import { useAuth, useTheme } from '../App';
+import { Car, Package, Compass, MapPin, Search, Sun, Moon, ChevronRight, Home as HomeIcon, Briefcase, ShieldCheck } from 'lucide-react';
+import { useAuth, useTheme, useLanguage } from '../App';
 import { MOCK_USER, MOCK_TRIPS, SAVED_ADDRESSES } from '../data/mockData';
 import GetGoLogo from '../components/GetGoLogo';
 
@@ -9,6 +9,7 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useLanguage();
   const [searchQuery, setSearchQuery] = useState('');
 
   const firstName = (user?.name || MOCK_USER.name).split(' ')[0];
@@ -17,26 +18,23 @@ export default function HomePage() {
   const SERVICES = [
     {
       id: 'ride',
-      title: 'Book a Ride',
+      title: t('bookRide') || 'Book a Ride',
       subtitle: 'Bike · Auto · Car · Van',
       icon: Car,
-      color: '#1B5E20',
       path: '/ride',
     },
     {
       id: 'parcel',
-      title: 'Send Parcel',
+      title: t('sendParcel') || 'Send Parcel',
       subtitle: 'Doorstep pickup & express delivery',
       icon: Package,
-      color: '#1B5E20',
       path: '/parcel',
     },
     {
       id: 'travel',
-      title: 'Intercity Travel',
+      title: t('travel') || 'Intercity Travel',
       subtitle: 'Bus · Flight · Train tickets',
       icon: Compass,
-      color: '#1B5E20',
       path: '/travel',
     },
   ];
@@ -73,10 +71,10 @@ export default function HomePage() {
       <div className="flat-card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
           <h1 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>
-            Welcome back, {firstName} 👋
+            {t('goodMorning') || 'Welcome back'}, {firstName} 👋
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4 }}>
-            Where would you like to go today?
+            {t('dropoffPlaceholder') || 'Where would you like to go today?'}
           </p>
         </div>
 
@@ -87,7 +85,7 @@ export default function HomePage() {
             <input
               type="text"
               className="input-field"
-              placeholder="Search pickup or destination..."
+              placeholder={t('dropoffPlaceholder') || 'Search pickup or destination...'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               style={{ paddingLeft: 42 }}
@@ -114,10 +112,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── SERVICES GRID (2-3 columns on desktop, 1 column on mobile) ── */}
+      {/* ── SERVICES GRID ── */}
       <div>
         <h2 className="text-section" style={{ marginBottom: 12, color: 'var(--text-primary)' }}>
-          Services
+          {t('bookRide') || 'Services'}
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
           {SERVICES.map(svc => {
@@ -158,16 +156,16 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── LOWER RESPONSIVE GRID (Recent Activity & Safety Side-by-Side on Desktop) ── */}
+      {/* ── LOWER RESPONSIVE GRID ── */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
         {/* Recent Activity */}
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 className="text-section" style={{ color: 'var(--text-primary)' }}>
-              Recent Activity
+              {t('recentTrips') || 'Recent Trips'}
             </h3>
             <button className="btn-text" onClick={() => navigate('/history')} style={{ fontSize: 13, padding: 0 }}>
-              View All
+              {t('viewAll') || 'View All →'}
             </button>
           </div>
 
@@ -222,7 +220,7 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Safety & Quality Guarantee */}
+        {/* Safety Banner */}
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{
@@ -240,10 +238,10 @@ export default function HomePage() {
             </div>
             <div>
               <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>
-                GetGo Safety Standard
+                {t('safetyBanner') || 'GetGo Safety Standard'}
               </div>
               <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>
-                100% verified drivers, live trip tracking, & 24/7 emergency support.
+                {t('safetySub') || '100% verified drivers, live trip tracking, & 24/7 emergency support.'}
               </div>
             </div>
           </div>

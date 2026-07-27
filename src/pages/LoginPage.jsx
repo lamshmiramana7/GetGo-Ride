@@ -1,10 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../App';
-import { ArrowLeft, ShieldCheck, Smartphone, Check } from 'lucide-react';
-import GetGoLogo from '../components/GetGoLogo';
+import { useAuth, useLanguage } from '../App';
+import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { LOGO_BASE64 } from '../assets/logoBase64';
 
 export default function LoginPage() {
   const { login } = useAuth();
+  const { language, setLanguage, t } = useLanguage();
   const [step, setStep] = useState('phone'); // 'phone' | 'otp'
   const [phone, setPhone] = useState('');
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
@@ -21,7 +22,7 @@ export default function LoginPage() {
 
   const handleSendOTP = () => {
     if (phone.replace(/\D/g, '').length < 10) {
-      setError('Please enter a valid 10-digit mobile number');
+      setError(t('invalidPhoneError') || 'Please enter a valid 10-digit mobile number');
       return;
     }
     setError('');
@@ -85,33 +86,50 @@ export default function LoginPage() {
         boxShadow: 'var(--shadow-flat)',
         overflow: 'hidden',
       }}>
-        {/* Solid Green Header */}
+        {/* Header featuring exact uploaded official GetGo RIDE logo image */}
         <div style={{
-          backgroundColor: '#1B5E20',
-          padding: '36px 24px',
+          backgroundColor: '#044C23',
+          padding: '28px 20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           textAlign: 'center',
         }}>
-          <GetGoLogo size={56} showText={false} variant="white" />
-          <h1 style={{
-            color: '#FFFFFF',
-            fontSize: 24,
-            fontWeight: 700,
-            marginTop: 16,
-            letterSpacing: '-0.02em',
-          }}>
-            GetGo Super-App
-          </h1>
-          <p style={{
-            color: '#E8F5E9',
-            fontSize: 14,
-            fontWeight: 400,
-            marginTop: 4,
-          }}>
-            Rides · Parcel Delivery · Intercity Travel
-          </p>
+          <img
+            src={LOGO_BASE64}
+            alt="GetGo Ride Logo"
+            style={{
+              width: '100%',
+              maxWidth: 260,
+              height: 'auto',
+              borderRadius: 16,
+              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+              objectFit: 'contain'
+            }}
+          />
+        </div>
+
+        {/* Language selector inside login */}
+        <div style={{ padding: '12px 24px 0', display: 'flex', justifyContent: 'flex-end' }}>
+          <select
+            value={language}
+            onChange={e => setLanguage(e.target.value)}
+            style={{
+              padding: '6px 12px',
+              borderRadius: 'var(--radius-sm)',
+              backgroundColor: 'var(--bg-secondary)',
+              color: 'var(--text-primary)',
+              border: '1px solid var(--border)',
+              fontSize: 13,
+              cursor: 'pointer'
+            }}
+          >
+            <option value="English">English</option>
+            <option value="தமிழ் (Tamil)">தமிழ் (Tamil)</option>
+            <option value="हिन्दी (Hindi)">हिन्दी (Hindi)</option>
+            <option value="తెలుగు (Telugu)">తెలుగు (Telugu)</option>
+            <option value="Malayalam">Malayalam</option>
+          </select>
         </div>
 
         {/* Content Body */}
@@ -120,16 +138,16 @@ export default function LoginPage() {
             <>
               <div>
                 <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>
-                  Sign in or create account
+                  {t('signInTitle') || 'Sign in or create account'}
                 </h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4 }}>
-                  Enter your 10-digit mobile number to continue
+                  {t('enterMobileSub') || 'Enter your 10-digit mobile number to continue'}
                 </p>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                 <label className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-                  Mobile Number
+                  {t('mobileNumber') || 'Mobile Number'}
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <div style={{
@@ -169,7 +187,7 @@ export default function LoginPage() {
                 onClick={handleSendOTP}
                 disabled={loading}
               >
-                {loading ? 'Sending OTP…' : 'Continue'}
+                {loading ? (t('sendingOtp') || 'Sending OTP…') : (t('continueBtn') || 'Continue')}
               </button>
 
               <div style={{
@@ -181,7 +199,7 @@ export default function LoginPage() {
                 color: 'var(--text-muted)',
               }}>
                 <ShieldCheck size={16} color="var(--brand-green-text)" />
-                <span>100% Secure & OTP Verified</span>
+                <span>{t('secureOtpVerified') || '100% Secure & OTP Verified'}</span>
               </div>
             </>
           ) : (
@@ -192,13 +210,13 @@ export default function LoginPage() {
                   onClick={() => { setStep('phone'); setOtp(['','','','','','']); setError(''); }}
                   style={{ paddingLeft: 0, marginBottom: 8 }}
                 >
-                  <ArrowLeft size={16} /> Back
+                  <ArrowLeft size={16} /> {t('back') || 'Back'}
                 </button>
                 <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>
-                  Enter Verification Code
+                  {t('enterOtpTitle') || 'Enter Verification Code'}
                 </h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4 }}>
-                  Sent 6-digit code to <strong>+91 {phone}</strong>
+                  {t('codeSentTo') || 'Sent 6-digit code to'} <strong>+91 {phone}</strong>
                 </p>
               </div>
 
@@ -235,11 +253,11 @@ export default function LoginPage() {
               <div style={{ textAlign: 'center' }}>
                 {timer > 0 ? (
                   <span className="text-caption" style={{ color: 'var(--text-muted)' }}>
-                    Resend code in <strong style={{ color: 'var(--text-primary)' }}>{timer}s</strong>
+                    {t('resendCodeIn') || 'Resend code in'} <strong style={{ color: 'var(--text-primary)' }}>{timer}s</strong>
                   </span>
                 ) : (
                   <button className="btn-text" onClick={handleResend}>
-                    Resend OTP Code
+                    {t('resendOtpBtn') || 'Resend OTP Code'}
                   </button>
                 )}
               </div>
@@ -250,11 +268,11 @@ export default function LoginPage() {
                 onClick={() => handleVerifyOTP()}
                 disabled={loading || otp.some(d => !d)}
               >
-                {loading ? 'Verifying…' : 'Verify & Continue'}
+                {loading ? (t('verifying') || 'Verifying…') : (t('verifyAndContinue') || 'Verify & Continue')}
               </button>
 
               <p className="text-caption" style={{ color: 'var(--text-muted)', textAlign: 'center' }}>
-                Demo: Enter any 6-digit code to proceed
+                {t('demoOtpNotice') || 'Demo: Enter any 6-digit code to proceed'}
               </p>
             </>
           )}

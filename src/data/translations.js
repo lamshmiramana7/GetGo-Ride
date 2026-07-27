@@ -10,6 +10,23 @@ export const TRANSLATIONS = {
     myProfile: 'My Profile',
     logout: 'Logout',
 
+    // Login Page
+    signInTitle: 'Sign in or create account',
+    enterMobileSub: 'Enter your 10-digit mobile number to continue',
+    mobileNumber: 'Mobile Number',
+    continueBtn: 'Continue',
+    sendingOtp: 'Sending OTP…',
+    secureOtpVerified: '100% Secure & OTP Verified',
+    back: 'Back',
+    enterOtpTitle: 'Enter Verification Code',
+    codeSentTo: 'Sent 6-digit code to',
+    resendCodeIn: 'Resend code in',
+    resendOtpBtn: 'Resend OTP Code',
+    verifyAndContinue: 'Verify & Continue',
+    verifying: 'Verifying…',
+    demoOtpNotice: 'Demo: Enter any 6-digit code to proceed',
+    invalidPhoneError: 'Please enter a valid 10-digit mobile number',
+
     // Home Page
     goodMorning: 'Good morning',
     goodAfternoon: 'Good afternoon',
@@ -36,6 +53,8 @@ export const TRANSLATIONS = {
     availableNearby: 'Available nearby',
     selectRider: 'Select Rider →',
     confirmBooking: 'Confirm Booking',
+    totalFare: 'Total Fare',
+    paymentMethod: 'Payment Method',
 
     // Parcel
     sendParcelTitle: 'Send a Parcel',
@@ -62,7 +81,6 @@ export const TRANSLATIONS = {
   },
 
   'தமிழ் (Tamil)': {
-    // Nav & Shell
     home: 'முகப்பு',
     trips: 'பயணங்கள்',
     travel: 'தூரப்பயணம்',
@@ -70,7 +88,22 @@ export const TRANSLATIONS = {
     myProfile: 'எனது சுயவிவரம்',
     logout: 'வெளியேறு',
 
-    // Home Page
+    signInTitle: 'உள்நுழைய அல்லது கணக்கு தொடங்க',
+    enterMobileSub: 'தொடர உங்கள் 10-இலக்க மொபைல் எண்ணை உள்ளிடவும்',
+    mobileNumber: 'மொபைல் எண்',
+    continueBtn: 'தொடர்க',
+    sendingOtp: 'OTP அனுப்பப்படுகிறது…',
+    secureOtpVerified: '100% பாதுகாப்பானது & OTP சரிபார்க்கப்பட்டது',
+    back: 'பின்செல்க',
+    enterOtpTitle: 'சரிபார்ப்புக் குறியீட்டை உள்ளிடவும்',
+    codeSentTo: '6-இலக்க குறியீடு அனுப்பப்பட்டது:',
+    resendCodeIn: 'மீண்டும் அனுப்ப:',
+    resendOtpBtn: 'OTP குறியீட்டை மீண்டும் அனுப்புக',
+    verifyAndContinue: 'சரிபார்த்து தொடர்க',
+    verifying: 'சரிபார்க்கப்படுகிறது…',
+    demoOtpNotice: 'டெமோ: தொடர ஏதேனும் 6-இலக்க குறியீட்டை உள்ளிடவும்',
+    invalidPhoneError: 'செல்லுபடியாகும் 10-இலக்க மொபைல் எண்ணை உள்ளிடவும்',
+
     goodMorning: 'காலை வணக்கம்',
     goodAfternoon: 'மதிய வணக்கம்',
     goodEvening: 'மாலை வணக்கம்',
@@ -83,7 +116,6 @@ export const TRANSLATIONS = {
     safetyBanner: 'உங்கள் பாதுகாப்பு எங்கள் முன்னுரிமை',
     safetySub: 'SOS பொத்தான், ரகசிய அழைப்புகள், இருப்பிடப் பகிர்வு',
 
-    // Ride Booking
     bookRideTitle: 'சவாரி முன்பதிவு',
     pickupPlaceholder: 'ஏறும் இடம்',
     dropoffPlaceholder: 'எங்கு செல்ல வேண்டும்?',
@@ -96,8 +128,9 @@ export const TRANSLATIONS = {
     availableNearby: 'அருகில் உள்ளவை',
     selectRider: 'ஓட்டுநரைத் தேர்ந்தெடு →',
     confirmBooking: 'சவாரியை உறுதிசெய்',
+    totalFare: 'மொத்தக் கட்டணம்',
+    paymentMethod: 'கட்டண முறை',
 
-    // Parcel
     sendParcelTitle: 'பார்சல் அனுப்பவும்',
     parcelDetails: 'பார்சல் விவரங்கள்',
     recipientName: 'பெறுநரின் முழு பெயர்',
@@ -105,7 +138,6 @@ export const TRANSLATIONS = {
     parcelDesc: 'பார்சல் விவரம் (விருப்பத்தேர்வு)',
     findRiders: 'ரைடர்களைக் கண்டறியவும் →',
 
-    // Profile & Settings
     savedAddresses: 'சேமிக்கப்பட்ட முகவரிகள்',
     paymentMethods: 'பணப்பரிவர்த்தனை முறைகள்',
     language: 'மொழி',
@@ -122,7 +154,6 @@ export const TRANSLATIONS = {
   },
 
   'हिन्दी (Hindi)': {
-    // Nav & Shell
     home: 'होम',
     trips: 'यात्राएं',
     travel: 'ट्रैवल',
@@ -130,7 +161,22 @@ export const TRANSLATIONS = {
     myProfile: 'मेरी प्रोफाइल',
     logout: 'लॉग आउट',
 
-    // Home Page
+    signInTitle: 'साइन इन करें या नया खाता बनाएं',
+    enterMobileSub: 'जारी रखने के लिए अपना 10 अंकों का मोबाइल नंबर दर्ज करें',
+    mobileNumber: 'मोबाइल नंबर',
+    continueBtn: 'आगे बढ़ें',
+    sendingOtp: 'ओटीपी भेजा जा रहा है…',
+    secureOtpVerified: '100% सुरक्षित और ओटीपी सत्यापित',
+    back: 'पीछे जाएं',
+    enterOtpTitle: 'सत्यापन कोड दर्ज करें',
+    codeSentTo: '6 अंकों का कोड भेजा गया:',
+    resendCodeIn: 'पुनः कोड भेजें:',
+    resendOtpBtn: 'ओटीपी कोड पुनः भेजें',
+    verifyAndContinue: 'सत्यापित करें और आगे बढ़ें',
+    verifying: 'सत्यापित हो रहा है…',
+    demoOtpNotice: 'डेमो: आगे बढ़ने के लिए कोई भी 6 अंकों का कोड दर्ज करें',
+    invalidPhoneError: 'कृपया एक मान्य 10 अंकों का मोबाइल नंबर दर्ज करें',
+
     goodMorning: 'शुभ प्रभात',
     goodAfternoon: 'शुभ दोपहर',
     goodEvening: 'शुभ संध्या',
@@ -143,7 +189,6 @@ export const TRANSLATIONS = {
     safetyBanner: 'आपकी सुरक्षा हमारी प्राथमिकता है',
     safetySub: 'SOS बटन, मास्क कॉल्स, लाइव लोकेशन शेयरिंग',
 
-    // Ride Booking
     bookRideTitle: 'राइड बुक करें',
     pickupPlaceholder: 'पिकअप लोकेशन',
     dropoffPlaceholder: 'कहाँ जाना है?',
@@ -156,8 +201,9 @@ export const TRANSLATIONS = {
     availableNearby: 'आसपास उपलब्ध',
     selectRider: 'ड्राइवर चुनें →',
     confirmBooking: 'राइड कन्फर्म करें',
+    totalFare: 'कुल किराया',
+    paymentMethod: 'भुगतान का तरीका',
 
-    // Parcel
     sendParcelTitle: 'पार्सल भेजें',
     parcelDetails: 'पार्सल विवरण',
     recipientName: 'प्राप्तकर्ता का पूरा नाम',
@@ -165,7 +211,6 @@ export const TRANSLATIONS = {
     parcelDesc: 'पार्सल विवरण (वैकल्पिक)',
     findRiders: 'राइडर खोजें →',
 
-    // Profile & Settings
     savedAddresses: 'सेव किए गए पते',
     paymentMethods: 'भुगतान के तरीके',
     language: 'भाषा',
@@ -188,6 +233,23 @@ export const TRANSLATIONS = {
     profile: 'ప్రొఫైల్',
     myProfile: 'నా ప్రొఫైల్',
     logout: 'లాగ్ అవుట్',
+
+    signInTitle: 'సైన్ ఇన్ చేయండి లేదా ఖాతాను సృష్టించండి',
+    enterMobileSub: 'కొనసాగించడానికి మీ 10 అంకెల మొబైల్ సంఖ్యను నమోదు చేయండి',
+    mobileNumber: 'మొబైల్ సంఖ్య',
+    continueBtn: 'కొనసాగించు',
+    sendingOtp: 'OTP పంపబడుతోంది…',
+    secureOtpVerified: '100% సురక్షితం & OTP ధృవీకరించబడింది',
+    back: 'వెనుకకు',
+    enterOtpTitle: 'ధృవీకరణ కోడ్‌ను నమోదు చేయండి',
+    codeSentTo: '6 అంకెల కోడ్ పంపబడింది:',
+    resendCodeIn: 'మళ్లీ పంపడానికి సమయం:',
+    resendOtpBtn: 'OTP కోడ్‌ను మళ్లీ పంపండి',
+    verifyAndContinue: 'ధృవీకరించి కొనసాగించండి',
+    verifying: 'ధృవీకరించబడుతోంది…',
+    demoOtpNotice: 'డెమో: కొనసాగడానికి ఏదైనా 6 అంకెల కోడ్‌ను నమోదు చేయండి',
+    invalidPhoneError: 'దయచేసి సరైన 10 అంకెల మొబైల్ సంఖ్యను నమోదు చేయండి',
+
     goodMorning: 'శుభోదయం',
     goodAfternoon: 'శుభ మధ్యాహ్నం',
     goodEvening: 'శుభ సాయంత్రం',
@@ -199,6 +261,7 @@ export const TRANSLATIONS = {
     specialOffer: 'ప్రత్యేక ఆఫర్',
     safetyBanner: 'మీ రక్షణే మా ప్రాధాన్యత',
     safetySub: 'SOS బటన్, కాల్ మాస్కింగ్, రైడ్ షేరింగ్',
+
     bookRideTitle: 'రైడ్ బుక్ చేయండి',
     pickupPlaceholder: 'పికప్ లొకేషన్',
     dropoffPlaceholder: 'ఎక్కడికి వెళ్లాలి?',
@@ -211,12 +274,16 @@ export const TRANSLATIONS = {
     availableNearby: 'దగ్గరలో అందుబాటులో ఉన్నాయి',
     selectRider: 'డ్రైవర్‌ను ఎంచుకోండి →',
     confirmBooking: 'రైడ్‌ను ఖరారు చేయండి',
+    totalFare: 'మొత్తం రుసుము',
+    paymentMethod: 'చెల్లింపు పద్ధతి',
+
     sendParcelTitle: 'పార్శిల్ పంపండి',
     parcelDetails: 'పార్శిల్ వివరాలు',
     recipientName: 'స్వీకరించేవారి పూర్తి పేరు',
     recipientPhone: 'స్వీకరించేవారి ఫోన్ నంబర్',
     parcelDesc: 'పార్శిల్ వివరాలు (ఐచ్ఛికం)',
     findRiders: 'రైడర్లను వెతకండి →',
+
     savedAddresses: 'సేవ్ చేసిన చిరునామాలు',
     paymentMethods: 'చెల్లింపు పద్ధతులు',
     language: 'భాష',
@@ -232,57 +299,6 @@ export const TRANSLATIONS = {
     addPayment: '+ చెల్లింపు పద్ధతి జోడించండి',
   },
 
-  'ಕನ್ನಡ (Kannada)': {
-    home: 'ಹೋಮ್',
-    trips: 'ಪ್ರಯಾಣಗಳು',
-    travel: 'ಟ್ರಾವೆಲ್',
-    profile: 'ಪ್ರೊಫೈಲ್',
-    myProfile: 'ನನ್ನ ಪ್ರೊಫೈಲ್',
-    logout: 'ಲಾಗ್ ಔಟ್',
-    goodMorning: 'ಶುಭೋದಯ',
-    goodAfternoon: 'ಶುಭ ಮಧ್ಯಾಹ್ನ',
-    goodEvening: 'ಶುಭ ಸಂಜೆ',
-    bookRide: 'ರೈಡ್ ಬುಕ್ ಮಾಡಿ',
-    sendParcel: 'ಪಾರ್ಸೆಲ್ ಕಳುಹಿಸಿ',
-    quickDestinations: 'ತ್ವರಿತ ಗಮ್ಯಸ್ಥಾನಗಳು',
-    recentTrips: 'ಇತ್ತೀಚಿನ ಪ್ರಯಾಣಗಳು',
-    viewAll: 'ಎಲ್ಲವನ್ನೂ ನೋಡಿ →',
-    specialOffer: 'ವಿಶೇಷ ಕೊಡುಗೆ',
-    safetyBanner: 'ನಿಮ್ಮ ಸುರಕ್ಷತೆಯೇ ನಮ್ಮ ಆದ್ಯತೆ',
-    safetySub: 'SOS ಬಟನ್, ಕಾಲ್ ಮಾಸ್ಕಿಂಗ್, ರೈಡ್ ಶೇರಿಂಗ್',
-    bookRideTitle: 'ರೈಡ್ ಬುಕ್ ಮಾಡಿ',
-    pickupPlaceholder: 'ಪಿಕಪ್ ಸ್ಥಳ',
-    dropoffPlaceholder: 'ಎಲ್ಲಿಗೆ ಹೋಗಬೇಕು?',
-    chooseVehicle: 'ವಾಹನ ಆಯ್ಕೆಮಾಡಿ →',
-    selectVehicleType: 'ವಾಹನ ಪ್ರಕಾರ ಆಯ್ಕೆಮಾಡಿ',
-    bike: 'ಬೈಕ್',
-    auto: 'ಆಟೋ',
-    car: 'ಕಾರು',
-    van: 'ವ್ಯಾನ್',
-    availableNearby: 'ಹತ್ತಿರದಲ್ಲಿ ಲಭ್ಯವಿದೆ',
-    selectRider: 'ಚಾಲಕನನ್ನು ಆಯ್ಕೆಮಾಡಿ →',
-    confirmBooking: 'ರೈಡ್ ಖಚಿತಪಡಿಸಿ',
-    sendParcelTitle: 'ಪಾರ್ಸೆಲ್ ಕಳುಹಿಸಿ',
-    parcelDetails: 'ಪಾರ್ಸೆಲ್ ವಿವರಗಳು',
-    recipientName: 'ಪಡೆಯುವವರ ಪೂರ್ಣ ಹೆಸರು',
-    recipientPhone: 'ಪಡೆಯುವವರ ಫೋನ್ ಸಂಖ್ಯೆ',
-    parcelDesc: 'ಪಾರ್ಸೆಲ್ ವಿವರ (ಐಚ್ಛಿಕ)',
-    findRiders: 'ರೈಡರ್ ಹುಡುಕಿ →',
-    savedAddresses: 'ಉಳಿಸಿದ ವಿಳಾಸಗಳು',
-    paymentMethods: 'ಪಾವತಿ ವಿಧಾನಗಳು',
-    language: 'ಭಾಷೆ',
-    darkMode: 'ಡಾರ್ಕ್ ಮೋಡ್',
-    lightMode: 'ಲೈಟ್ ಮೋಡ್',
-    offers: 'ಕೊಡುಗೆಗಳು ಮತ್ತು ಬಹುಮಾನಗಳು',
-    safetySettings: 'ಸುರಕ್ಷತಾ ಸೆಟ್ಟಿಂಗ್‌ಗಳು',
-    helpSupport: 'ಸಹಾಯ ಮತ್ತು ಬೆಂಬಲ',
-    rateApp: 'ಆ್ಯಪ್ ರೇಟ್ ಮಾಡಿ',
-    termsPrivacy: 'ನಿಯಮಗಳು ಮತ್ತು ಗೌಪ್ಯತೆ',
-    saved: 'ಉಳಿಸಲಾಗಿದೆ',
-    addAddress: '+ ಹೊಸ ವಿಳಾಸ ಸೇರಿಸಿ',
-    addPayment: '+ ಪಾವತಿ ವಿಧಾನ ಸೇರಿಸಿ',
-  },
-
   Malayalam: {
     home: 'ഹോം',
     trips: 'യാത്രകൾ',
@@ -290,6 +306,23 @@ export const TRANSLATIONS = {
     profile: 'പ്രൊഫൈൽ',
     myProfile: 'എന്റെ പ്രൊഫൈൽ',
     logout: 'ലോഗ് ഔട്ട്',
+
+    signInTitle: 'സൈൻ ഇൻ ചെയ്യുക അല്ലെങ്കിൽ അക്കൗണ്ട് തുടങ്ങുക',
+    enterMobileSub: 'തുടരാൻ നിങ്ങളുടെ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക',
+    mobileNumber: 'മൊബൈൽ നമ്പർ',
+    continueBtn: 'തുടരുക',
+    sendingOtp: 'OTP അയക്കുന്നു…',
+    secureOtpVerified: '100% സുരക്ഷിതവും OTP സ്ഥിരീകരിച്ചതുമാണ്',
+    back: 'തിരികെ',
+    enterOtpTitle: 'സ്ഥിരീകരണ കോഡ് നൽകുക',
+    codeSentTo: '6 അക്ക കോഡ് അയച്ച നമ്പർ:',
+    resendCodeIn: 'വീണ്ടും അയക്കാൻ:',
+    resendOtpBtn: 'OTP കോഡ് വീണ്ടും അയക്കുക',
+    verifyAndContinue: 'സ്ഥിരീകരിച്ച് തുടരുക',
+    verifying: 'സ്ഥിരീകരിക്കുന്നു…',
+    demoOtpNotice: 'ഡെമോ: തുടരാൻ ഏതെങ്കിലും 6 അക്ക കോഡ് നൽകുക',
+    invalidPhoneError: 'ദയവായി സാധുവായ 10 അക്ക മൊബൈൽ നമ്പർ നൽകുക',
+
     goodMorning: 'സുപ്രഭാതം',
     goodAfternoon: 'ഉച്ചവന്ദനം',
     goodEvening: 'സന്ധ്യാവന്ദനം',
@@ -301,6 +334,7 @@ export const TRANSLATIONS = {
     specialOffer: 'പ്രത്യേക ഓഫർ',
     safetyBanner: 'നിങ്ങളുടെ സുരക്ഷ ഞങ്ങളുടെ മുൻഗണനയാണ്',
     safetySub: 'SOS ബട്ടൺ, മാസ്ക് ചെയ്ത കോളുകൾ, ലൊക്കേഷൻ പങ്കിടൽ',
+
     bookRideTitle: 'റൈഡ് ബുക്ക് ചെയ്യുക',
     pickupPlaceholder: 'പിക്കപ്പ് ലൊക്കേഷൻ',
     dropoffPlaceholder: 'എവിടേക്ക് പോകണം?',
@@ -313,12 +347,16 @@ export const TRANSLATIONS = {
     availableNearby: 'അടുത്ത് ലഭ്യമാണ്',
     selectRider: 'ഡ്രൈവറെ തിരഞ്ഞെടുക്കുക →',
     confirmBooking: 'റൈഡ് സ്ഥിരീകരിക്കുക',
+    totalFare: 'ആകെ നിരക്ക്',
+    paymentMethod: 'പേയ്‌മെന്റ് രീതി',
+
     sendParcelTitle: 'പാഴ്‌സൽ അയക്കുക',
     parcelDetails: 'പാഴ്‌സൽ വിവരങ്ങൾ',
     recipientName: 'ലഭിക്കുന്നയാളുടെ മുഴുവൻ പേര്',
     recipientPhone: 'ലഭിക്കുന്നയാളുടെ ഫോൺ നമ്പർ',
     parcelDesc: 'പാഴ്‌സൽ വിവരണം (ഓപ്ഷണൽ)',
     findRiders: 'റൈഡർമാരെ കണ്ടെത്തുക →',
+
     savedAddresses: 'സേവ് ചെയ്ത വിലാസങ്ങൾ',
     paymentMethods: 'പേയ്‌മെന്റ് രീതികൾ',
     language: 'ഭാഷ',

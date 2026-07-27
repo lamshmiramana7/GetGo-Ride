@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Zap, Car, Truck, MapPin, ArrowLeft, ShieldCheck, Check, Clock, CreditCard, ChevronRight, User, Phone, Star, AlertCircle } from 'lucide-react';
-import { MOCK_DRIVERS, VEHICLE_CATEGORIES, SAVED_ADDRESSES, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
+import { Zap, Car, Truck, MapPin, ArrowLeft, Check, Phone, CreditCard, X, ChevronRight } from 'lucide-react';
+import { MOCK_DRIVERS, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
 import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
-import GetGoLogo from '../components/GetGoLogo';
+import { useLanguage } from '../App';
 
 const VEHICLE_IMAGES = VEHICLE_BASE64;
 
@@ -44,6 +44,7 @@ function MapController({ center }) {
 
 export default function RideBookingPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [step, setStep] = useState('location'); // 'location' | 'vehicle' | 'confirm' | 'tracking'
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
@@ -52,18 +53,14 @@ export default function RideBookingPage() {
   const [selectedVehicle, setSelectedVehicle] = useState('car');
   const [selectedDriver, setSelectedDriver] = useState(MOCK_DRIVERS[0]);
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHODS[0]);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [searchSuggestions, setSearchSuggestions] = useState([]);
   const [activeField, setActiveField] = useState(null);
   const [isDispatching, setIsDispatching] = useState(false);
-  const [trackingState, setTrackingState] = useState('arriving'); // 'arriving' | 'onTrip' | 'completed'
+  const [trackingState, setTrackingState] = useState('arriving');
   const [showReceipt, setShowReceipt] = useState(false);
-  const [driverPos, setDriverPos] = useState({ lat: 13.0827, lng: 80.2707 });
   const [etaMins, setEtaMins] = useState(4);
   const trackingIntervalRef = useRef(null);
-
-  const vehicleDrivers = useMemo(() => {
-    return MOCK_DRIVERS.filter(d => d.vehicle === selectedVehicle);
-  }, [selectedVehicle]);
 
   const estimatedFare = useMemo(() => {
     if (!dropCoords) return 145;
@@ -102,7 +99,6 @@ export default function RideBookingPage() {
       setIsDispatching(false);
       setStep('tracking');
       setTrackingState('arriving');
-      // Animate driver moving
       trackingIntervalRef.current = setInterval(() => {
         setEtaMins(prev => Math.max(1, prev - 1));
       }, 3000);
@@ -129,9 +125,9 @@ export default function RideBookingPage() {
         </button>
         <div>
           <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-            {step === 'location' && 'Book a Ride'}
-            {step === 'vehicle' && 'Select Vehicle'}
-            {step === 'confirm' && 'Confirm Booking'}
+            {step === 'location' && (t('bookRideTitle') || 'Book a Ride')}
+            {step === 'vehicle' && (t('selectVehicleType') || 'Select Vehicle')}
+            {step === 'confirm' && (t('confirmBooking') || 'Confirm Booking')}
             {step === 'tracking' && 'Live Trip Tracking'}
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
@@ -152,7 +148,7 @@ export default function RideBookingPage() {
           ))}
         </MapContainer>
         <div style={{ position: 'absolute', top: 12, left: 12, backgroundColor: 'var(--bg-surface)', padding: '6px 12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)', fontSize: 13, color: 'var(--text-secondary)' }}>
-          Active drivers nearby
+          {t('availableNearby') || 'Active drivers nearby'}
         </div>
       </div>
 
@@ -165,7 +161,7 @@ export default function RideBookingPage() {
               <input
                 className="input-field"
                 style={{ paddingLeft: 36 }}
-                placeholder="Enter pickup location..."
+                placeholder={t('pickupPlaceholder') || 'Enter pickup location...'}
                 value={pickup}
                 onChange={e => { setPickup(e.target.value); handleSearch(e.target.value, 'pickup'); }}
                 onFocus={() => setActiveField('pickup')}
@@ -186,7 +182,7 @@ export default function RideBookingPage() {
               <input
                 className="input-field"
                 style={{ paddingLeft: 36 }}
-                placeholder="Where to? (Enter destination)"
+                placeholder={t('dropoffPlaceholder') || 'Where to? (Enter destination)'}
                 value={dropoff}
                 onChange={e => { setDropoff(e.target.value); handleSearch(e.target.value, 'dropoff'); }}
                 onFocus={() => setActiveField('dropoff')}
@@ -203,26 +199,12 @@ export default function RideBookingPage() {
             </div>
           </div>
 
-          {/* Quick Saved Pickers */}
-          <div style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
-            {SAVED_ADDRESSES.map(a => (
-              <button
-                key={a.id}
-                onClick={() => { setDropoff(a.address); setDropCoords({ lat: a.lat, lng: a.lng }); }}
-                className="badge-flat"
-                style={{ cursor: 'pointer', padding: '6px 12px' }}
-              >
-                <span>{a.label}</span>
-              </button>
-            ))}
-          </div>
-
           <button
             className="btn-primary"
             disabled={!pickup || !dropoff}
             onClick={() => setStep('vehicle')}
           >
-            Continue to Vehicle Selection
+            {t('chooseVehicle') || 'Continue to Vehicle Selection'}
           </button>
         </div>
       )}
@@ -235,7 +217,7 @@ export default function RideBookingPage() {
             <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{pickup} → {dropoff}</span>
           </div>
 
-          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Select Ride Option</h2>
+          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('selectVehicleType') || 'Select Ride Option'}</h2>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12 }}>
             {[
@@ -252,7 +234,6 @@ export default function RideBookingPage() {
                   onClick={() => setSelectedVehicle(v.id)}
                   style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 14 }}
                 >
-                  {/* Real Vehicle Photo with GetGo Sticker Overlay */}
                   <div style={{
                     width: 70, height: 50, borderRadius: 'var(--radius-md)',
                     backgroundColor: '#FFFFFF',
@@ -280,9 +261,7 @@ export default function RideBookingPage() {
                   </div>
 
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="text-body-medium" style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
-                      {v.label}
-                    </div>
+                    <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{v.label}</div>
                     <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>{v.desc}</div>
                   </div>
 
@@ -293,7 +272,7 @@ export default function RideBookingPage() {
           </div>
 
           <button className="btn-primary" onClick={() => setStep('confirm')}>
-            Proceed with Selected Ride
+            {t('confirmBooking') || 'Proceed with Selected Ride'}
           </button>
         </div>
       )}
@@ -302,7 +281,7 @@ export default function RideBookingPage() {
       {step === 'confirm' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Booking Summary</h2>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('confirmBooking') || 'Booking Summary'}</h2>
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Review ride fare & assigned driver</p>
           </div>
 
@@ -318,7 +297,7 @@ export default function RideBookingPage() {
             <div className="badge-flat-green">⭐ {selectedDriver.rating}</div>
           </div>
 
-          {/* Route & Fare */}
+          {/* Route & Fare & Payment Method Selection */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
               <span style={{ color: 'var(--text-secondary)' }}>Pickup</span>
@@ -328,18 +307,41 @@ export default function RideBookingPage() {
               <span style={{ color: 'var(--text-secondary)' }}>Destination</span>
               <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{dropoff}</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14 }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Payment Method</span>
-              <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{paymentMethod.label}</span>
+
+            {/* Interactive Payment Method Picker Row */}
+            <div
+              onClick={() => setShowPaymentModal(true)}
+              style={{
+                display: 'flex',
+                justify: 'space-between',
+                alignItems: 'center',
+                padding: '10px 12px',
+                backgroundColor: 'var(--bg-secondary)',
+                borderRadius: 'var(--radius-sm)',
+                border: '1px solid var(--border)',
+                cursor: 'pointer'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <CreditCard size={18} color="var(--brand-green-text)" />
+                <div>
+                  <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{t('paymentMethod') || 'Payment Method'}</div>
+                  <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{paymentMethod.label} ({paymentMethod.detail})</div>
+                </div>
+              </div>
+              <button className="btn-text" style={{ fontSize: 13, padding: 0 }}>
+                Alter / Change
+              </button>
             </div>
+
             <div style={{ borderTop: '1px solid var(--border)', paddingTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span className="text-body-medium" style={{ color: 'var(--text-primary)' }}>Total Fare</span>
+              <span className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{t('totalFare') || 'Total Fare'}</span>
               <span style={{ fontSize: 24, fontWeight: 700, color: 'var(--brand-green-text)' }}>₹{estimatedFare}</span>
             </div>
           </div>
 
           <button className="btn-primary" onClick={handleConfirmBooking} disabled={isDispatching}>
-            {isDispatching ? 'Confirming with Driver…' : `Confirm Booking — ₹${estimatedFare}`}
+            {isDispatching ? 'Confirming with Driver…' : `${t('confirmBooking') || 'Confirm Booking'} — ₹${estimatedFare}`}
           </button>
         </div>
       )}
@@ -362,7 +364,6 @@ export default function RideBookingPage() {
             </div>
           </div>
 
-          {/* Driver Card */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 16, backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
             <div style={{ width: 48, height: 48, borderRadius: '50%', backgroundColor: 'var(--brand-green)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 18 }}>
               {selectedDriver.name[0]}
@@ -371,14 +372,8 @@ export default function RideBookingPage() {
               <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{selectedDriver.name}</div>
               <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{selectedDriver.vehicleModel} · {selectedDriver.vehicleNo}</div>
             </div>
-            <div style={{ display: 'flex', gap: 8 }}>
-              <button className="btn-secondary" style={{ width: 36, height: 36, padding: 0, borderRadius: '50%' }}>
-                <Phone size={16} />
-              </button>
-            </div>
           </div>
 
-          {/* Action buttons */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {trackingState === 'arriving' && (
               <button className="btn-primary" onClick={() => setTrackingState('onTrip')}>
@@ -398,6 +393,41 @@ export default function RideBookingPage() {
             <button className="btn-secondary" onClick={() => navigate('/')}>
               Return to Home Dashboard
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── PAYMENT METHOD SELECTOR MODAL ── */}
+      {showPaymentModal && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div className="flat-card" style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('paymentMethods') || 'Select Payment Method'}</h2>
+              <button onClick={() => setShowPaymentModal(false)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {PAYMENT_METHODS.map(pm => {
+                const isSel = paymentMethod.id === pm.id;
+                return (
+                  <div
+                    key={pm.id}
+                    onClick={() => { setPaymentMethod(pm); setShowPaymentModal(false); }}
+                    className={isSel ? 'flat-card-selected' : 'flat-card-interactive'}
+                    style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 12 }}
+                  >
+                    <CreditCard size={20} color={isSel ? 'var(--brand-green-text)' : 'var(--text-secondary)'} />
+                    <div style={{ flex: 1 }}>
+                      <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{pm.label}</div>
+                      <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{pm.detail}</div>
+                    </div>
+                    {isSel && <Check size={18} color="var(--brand-green-text)" />}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}
@@ -431,11 +461,9 @@ export default function RideBookingPage() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <button className="btn-primary" onClick={() => { setShowReceipt(false); navigate('/'); }}>
-                Done & Close
-              </button>
-            </div>
+            <button className="btn-primary" onClick={() => { setShowReceipt(false); navigate('/'); }}>
+              Done & Close
+            </button>
           </div>
         </div>
       )}

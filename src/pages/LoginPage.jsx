@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useLanguage } from '../App';
-import { ArrowLeft, ShieldCheck, Globe, CheckCircle2, Lock, Sparkles, Smartphone, ChevronRight } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Globe, CheckCircle2, Lock, Sparkles, Smartphone, ChevronRight, Navigation, Award } from 'lucide-react';
 import { LOGO_BASE64 } from '../assets/logoBase64';
+import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
+import { RIDE_BANNER_BASE64, DRIVER_AVATAR_BASE64 } from '../assets/mediaBase64';
 
 const LANGUAGES = [
   { id: 'English', label: 'English', flag: '🇬🇧' },
@@ -84,7 +86,7 @@ export default function LoginPage() {
       justifyContent: 'center',
       padding: '24px 16px',
       backgroundColor: 'var(--bg-page)',
-      background: 'radial-gradient(100% 50% at 50% 0%, rgba(27, 94, 32, 0.15) 0%, var(--bg-page) 100%)',
+      background: 'radial-gradient(100% 50% at 50% 0%, rgba(27, 94, 32, 0.18) 0%, var(--bg-page) 100%)',
     }}>
       <div style={{
         width: '100%',
@@ -97,75 +99,98 @@ export default function LoginPage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        {/* Professional Header with Gradient Background & Official GetGo RIDE Logo */}
+        {/* GetGo Rider Banner Header */}
         <div style={{
           background: 'linear-gradient(180deg, #044C23 0%, #022B14 100%)',
-          padding: '36px 24px 28px',
+          padding: '24px 20px 20px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
           textAlign: 'center',
           position: 'relative',
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
         }}>
-          {/* Subtle Glow Ring */}
+          {/* Top Logo Lockup */}
           <div style={{
-            position: 'absolute',
-            top: -50,
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: 240,
-            height: 240,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, rgba(0,0,0,0) 70%)',
-            pointerEvents: 'none'
-          }} />
-
-          {/* Official Base64 Logo Image */}
-          <div style={{
-            position: 'relative',
-            zIndex: 1,
-            padding: 8,
-            borderRadius: 20,
-            backgroundColor: 'rgba(255, 255, 255, 0.04)',
+            padding: 6,
+            borderRadius: 16,
+            backgroundColor: 'rgba(255, 255, 255, 0.05)',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            boxShadow: '0 12px 32px rgba(0,0,0,0.4)',
-            maxWidth: 290,
-            width: '100%'
+            boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+            maxWidth: 240,
+            width: '100%',
+            marginBottom: 16
           }}>
             <img
               src={LOGO_BASE64}
               alt="GetGo Ride Official Logo"
-              style={{
-                width: '100%',
-                height: 'auto',
-                display: 'block',
-                borderRadius: 14,
-                objectFit: 'contain'
-              }}
+              style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 10, objectFit: 'contain' }}
             />
           </div>
 
+          {/* Real HD GetGo Rider Picture Feature Card */}
           <div style={{
-            marginTop: 14,
-            fontSize: 12,
-            fontWeight: 600,
-            color: 'rgba(255, 255, 255, 0.75)',
-            letterSpacing: '0.04em',
-            textTransform: 'uppercase',
+            width: '100%',
+            backgroundColor: 'rgba(255, 255, 255, 0.06)',
+            borderRadius: 16,
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            padding: 12,
             display: 'flex',
             alignItems: 'center',
-            gap: 6
+            gap: 14,
+            textAlign: 'left'
           }}>
-            <Sparkles size={13} color="#4ADE80" />
-            <span>Rides · Parcels · Intercity Travel</span>
+            {/* GetGo Bike Cutout with Sticker Overlay */}
+            <div style={{
+              width: 72,
+              height: 72,
+              borderRadius: 14,
+              backgroundColor: '#FFFFFF',
+              border: '2px solid var(--brand-green)',
+              padding: 4,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              position: 'relative',
+              flexShrink: 0,
+              boxShadow: '0 6px 16px rgba(0,0,0,0.3)'
+            }}>
+              <img src={VEHICLE_BASE64.bike} alt="GetGo Bike Rider" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              <div style={{
+                position: 'absolute',
+                bottom: 2,
+                right: 2,
+                backgroundColor: '#1B5E20',
+                color: '#FFFFFF',
+                fontSize: 8,
+                fontWeight: 800,
+                padding: '2px 4px',
+                borderRadius: 4,
+                letterSpacing: '0.05em'
+              }}>
+                GetGo
+              </div>
+            </div>
+
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <span className="badge-flat-green" style={{ fontSize: 10, padding: '2px 6px' }}>
+                  <Award size={12} /> Certified Rider Partner
+                </span>
+              </div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginTop: 4 }}>
+                GetGo Express Rider
+              </div>
+              <div style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.75)', marginTop: 2 }}>
+                Verified Captains · Helmet & Safety Verified 🛡️
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Language Selector Selector Bar */}
         <div style={{
-          padding: '14px 20px',
+          padding: '12px 20px',
           backgroundColor: 'var(--bg-secondary)',
           borderBottom: '1px solid var(--border)',
           display: 'flex',
@@ -199,11 +224,11 @@ export default function LoginPage() {
         </div>
 
         {/* Professional Form Card Content Body */}
-        <div style={{ padding: 28, display: 'flex', flexDirection: 'column', gap: 22 }}>
+        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
           {step === 'phone' ? (
             <>
               <div>
-                <h2 className="text-section" style={{ color: 'var(--text-primary)', fontSize: 20, fontWeight: 700 }}>
+                <h2 className="text-section" style={{ color: 'var(--text-primary)', fontSize: 19, fontWeight: 700 }}>
                   {t('signInTitle') || 'Welcome to GetGo'}
                 </h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4, fontSize: 13 }}>
@@ -217,8 +242,8 @@ export default function LoginPage() {
                 </label>
                 <div style={{ display: 'flex', gap: 10 }}>
                   <div style={{
-                    height: 52,
-                    padding: '0 16px',
+                    height: 50,
+                    padding: '0 14px',
                     backgroundColor: 'var(--bg-secondary)',
                     border: '1px solid var(--border)',
                     borderRadius: 'var(--radius-md)',
@@ -243,7 +268,7 @@ export default function LoginPage() {
                     onKeyDown={e => e.key === 'Enter' && handleSendOTP()}
                     autoFocus
                     maxLength={10}
-                    style={{ height: 52, fontSize: 16, fontWeight: 600, letterSpacing: '0.05em' }}
+                    style={{ height: 50, fontSize: 16, fontWeight: 600, letterSpacing: '0.05em' }}
                   />
                 </div>
                 {error && <p className="text-caption" style={{ color: '#EF4444', fontSize: 12, marginTop: 2 }}>{error}</p>}
@@ -276,7 +301,7 @@ export default function LoginPage() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: 8,
-                padding: '12px 14px',
+                padding: '10px 14px',
                 backgroundColor: 'var(--bg-secondary)',
                 borderRadius: 'var(--radius-md)',
                 fontSize: 12,
@@ -297,7 +322,7 @@ export default function LoginPage() {
                 >
                   <ArrowLeft size={16} /> {t('back') || 'Change Phone Number'}
                 </button>
-                <h2 className="text-section" style={{ color: 'var(--text-primary)', fontSize: 20, fontWeight: 700 }}>
+                <h2 className="text-section" style={{ color: 'var(--text-primary)', fontSize: 19, fontWeight: 700 }}>
                   {t('enterOtpTitle') || 'Enter Verification Code'}
                 </h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4, fontSize: 13 }}>
@@ -319,7 +344,7 @@ export default function LoginPage() {
                       onChange={e => handleOtpChange(i, e.target.value)}
                       onKeyDown={e => handleOtpKeyDown(i, e)}
                       style={{
-                        height: 52,
+                        height: 50,
                         width: '100%',
                         backgroundColor: 'var(--bg-input)',
                         border: `2px solid ${d ? 'var(--brand-green)' : 'var(--border)'}`,

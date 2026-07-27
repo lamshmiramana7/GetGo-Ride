@@ -76,11 +76,11 @@ export default function App() {
           <TripContext.Provider value={{ activeTrip, setActiveTrip }}>
             <HashRouter>
               <Routes>
-                {/* Public */}
-                <Route path="/login" element={user ? <Navigate to="/" replace /> : <LoginPage />} />
+                {/* Public Login Route - Always renders LoginPage */}
+                <Route path="/login" element={<LoginPage />} />
 
-                {/* Protected — wrapped in Layout (bottom nav + side menu) */}
-                <Route element={user ? <Layout /> : <Navigate to="/login" replace />}>
+                {/* Protected App Routes */}
+                <Route element={user ? <Layout /> : <LoginPage />}>
                   <Route index element={<HomePage />} />
                   <Route path="ride" element={<RideBookingPage />} />
                   <Route path="parcel" element={<ParcelPage />} />
@@ -92,7 +92,7 @@ export default function App() {
                 </Route>
 
                 {/* Fallback */}
-                <Route path="*" element={<Navigate to={user ? '/' : '/login'} replace />} />
+                <Route path="*" element={<LoginPage />} />
               </Routes>
             </HashRouter>
           </TripContext.Provider>

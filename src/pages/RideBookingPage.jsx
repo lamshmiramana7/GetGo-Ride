@@ -138,7 +138,7 @@ export default function RideBookingPage() {
       </div>
 
       {/* Map */}
-      <div style={{ flex: '0 0 240px', position: 'relative' }}>
+      <div style={{ flex: '0 0 220px', position: 'relative' }}>
         <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={13} style={{ height: '100%', width: '100%' }} zoomControl={false} attributionControl={false}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <MapController center={[pickupCoords.lat, pickupCoords.lng]} />
@@ -155,8 +155,15 @@ export default function RideBookingPage() {
         </div>
       </div>
 
-      {/* Inputs */}
+      {/* Hero Banner & Inputs */}
       <div style={{ flex: 1, padding: 16, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 12 }}>
+        <div style={{ borderRadius: 'var(--radius-xl)', overflow: 'hidden', height: 95, position: 'relative', border: '1.5px solid rgba(0,166,81,0.3)', boxShadow: 'var(--shadow-md)', flexShrink: 0 }}>
+          <img src="assets/ride_banner.png" alt="Book Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            <div style={{ fontFamily: 'Poppins', fontWeight: 800, fontSize: '1.0625rem', color: '#fff' }}>Instant City Rides</div>
+            <div style={{ fontSize: '0.75rem', color: '#00A651', fontWeight: 600, marginTop: 2 }}>⚡ Fast Bike & Auto Pickups · Flat Rate</div>
+          </div>
+        </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {/* Pickup */}
           <div style={{ position: 'relative' }}>
@@ -526,7 +533,9 @@ function AnonymousDriverCard({ driver, selected, onSelect, dropCoords, pickupCoo
 
   return (
     <div id={`driver-card-${driver.id}`} className={`driver-card ${selected ? 'selected' : ''}`} onClick={onSelect}>
-      <div className="driver-vehicle-icon">{VEHICLE_ICONS[driver.vehicle]}</div>
+      <div className="driver-vehicle-icon" style={{ width: 46, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-input)', borderRadius: 10, padding: 4 }}>
+        <img src={`assets/${driver.vehicle}.png`} alt={driver.vehicle} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+      </div>
       <div className="driver-info">
         <div className="driver-vehicle-type">{driver.vehicleModel}</div>
         <div className="driver-vehicle-model">{driver.color} · {driver.vehicleNo}</div>

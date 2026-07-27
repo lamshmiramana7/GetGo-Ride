@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../App';
+import GetGoLogo from '../components/GetGoLogo';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -71,7 +72,9 @@ export default function LoginPage() {
     <div className="login-screen">
       {/* Hero */}
       <div className="login-hero">
-        <img src="logo.png" alt="GetGo Ride" className="login-logo" />
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 8 }}>
+          <GetGoLogo size={110} showText={true} />
+        </div>
         <p className="login-tagline">The ultimate transport network for India</p>
       </div>
 

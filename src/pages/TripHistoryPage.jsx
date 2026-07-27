@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { MOCK_TRIPS } from '../data/mockData';
+import bikeImg from '../assets/bike.png';
+import autoImg from '../assets/auto.png';
+import carImg from '../assets/car.png';
+import vanImg from '../assets/van.png';
+import parcelImg from '../assets/parcel.png';
+import busImg from '../assets/bus.png';
 
-const TYPE_ICONS = { ride: { bike: '🏍️', auto: '🛺', car: '🚗', van: '🚐' }, parcel: { bike: '📦' }, travel: { bus: '🚌', flight: '✈️' } };
+const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg, bus: busImg, parcel: parcelImg };
 const FILTERS = ['All', 'Rides', 'Parcels', 'Travel'];
 
 export default function TripHistoryPage() {
@@ -63,20 +69,15 @@ export default function TripHistoryPage() {
 }
 
 function TripCard({ trip, onOpen }) {
-  const images = { bike: 'assets/bike.png', auto: 'assets/auto.png', car: 'assets/car.png', van: 'assets/van.png' };
-  const icons = { bus: '🚌', flight: '✈️' };
   const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   const typeLabel = { ride: 'Ride', parcel: 'Parcel', travel: 'Travel' }[trip.type];
   const typeBadge = { ride: 'badge-blue', parcel: 'badge-gold', travel: 'badge-green' }[trip.type];
+  const vehicleImg = VEHICLE_IMAGES[trip.vehicle] || (trip.type === 'parcel' ? parcelImg : trip.type === 'travel' ? busImg : carImg);
 
   return (
     <div id={`history-trip-${trip.id}`} className="trip-card" onClick={onOpen}>
-      <div style={{ width: 48, height: 48, background: 'var(--bg-input)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 4, overflow: 'hidden' }}>
-        {images[trip.vehicle] ? (
-          <img src={images[trip.vehicle]} alt={trip.vehicle} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-        ) : (
-          <span style={{ fontSize: '1.375rem' }}>{icons[trip.vehicle] || '🚗'}</span>
-        )}
+      <div style={{ width: 52, height: 52, background: 'var(--bg-input)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 6, overflow: 'hidden' }}>
+        <img src={vehicleImg} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
       </div>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -134,7 +135,9 @@ function TripDetail({ trip, onClose }) {
           {/* Driver */}
           {trip.driver && (
             <div style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '12px 14px', border: '1px solid var(--border)' }}>
-              <div style={{ width: 44, height: 44, background: 'var(--bg-input)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.375rem', flexShrink: 0 }}>{icons[trip.vehicle]}</div>
+              <div style={{ width: 46, height: 46, background: 'var(--bg-input)', borderRadius: 12, padding: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
+                <img src={VEHICLE_IMAGES[trip.vehicle] || carImg} alt={trip.vehicle} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+              </div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>{trip.driver.name}</div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>{trip.driver.vehicleModel} · {trip.driver.vehicleNo}</div>

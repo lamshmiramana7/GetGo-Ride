@@ -1,6 +1,80 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../App';
-import logoImg from '../assets/logo.png';
+
+/* ── Inline App Icon Logo (matches screenshot style) ─────────────────── */
+function AppIconLogo() {
+  return (
+    <div style={{
+      width: 140,
+      height: 140,
+      borderRadius: 32,
+      background: 'linear-gradient(180deg, #053315 0%, #021c0b 100%)',
+      boxShadow: '0 10px 36px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      border: '1.5px solid rgba(0,210,100,0.3)',
+      padding: '12px 14px',
+      boxSizing: 'border-box',
+    }}>
+      {/* GetGo + Bike Rider row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
+        <span style={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 900,
+          fontSize: '1.75rem',
+          color: '#ffffff',
+          lineHeight: 1,
+          letterSpacing: '-0.5px',
+        }}>GetGo</span>
+
+        {/* Motorcycle Rider Vector */}
+        <svg width="40" height="30" viewBox="0 0 50 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Speed lines behind */}
+          <line x1="2" y1="12" x2="12" y2="12" stroke="#00A651" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="0" y1="20" x2="10" y2="20" stroke="#00A651" strokeWidth="2" strokeLinecap="round"/>
+          {/* Wheels */}
+          <circle cx="16" cy="27" r="7" stroke="white" strokeWidth="2.5"/>
+          <circle cx="40" cy="27" r="7" stroke="white" strokeWidth="2.5"/>
+          {/* Chassis & Body */}
+          <path d="M16 27 L26 17 L36 17 L40 27" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M26 17 L22 10 L32 7 L36 17" fill="white"/>
+          {/* Rider */}
+          <circle cx="28" cy="6" r="3.5" fill="white"/>
+          <path d="M25 9 Q32 11 36 15" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
+      </div>
+
+      {/* -- RIDE -- line section */}
+      <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 6, margin: '4px 0 2px' }}>
+        <div style={{ height: 1.5, flex: 1, background: '#00A651' }} />
+        <span style={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 900,
+          fontSize: '1.125rem',
+          color: '#00A651',
+          letterSpacing: '3px',
+          lineHeight: 1,
+        }}>RIDE</span>
+        <div style={{ height: 1.5, flex: 1, background: '#00A651' }} />
+      </div>
+
+      {/* Sub-tagline inside logo box */}
+      <div style={{
+        fontFamily: 'Outfit, sans-serif',
+        fontSize: '0.45rem',
+        color: 'rgba(255,255,255,0.7)',
+        letterSpacing: '0.1px',
+        textAlign: 'center',
+        whiteSpace: 'nowrap',
+        marginTop: 2,
+      }}>
+        The ultimate transport network for India.
+      </div>
+    </div>
+  );
+}
 
 /* ── Main Login Page ──────────────────────────────────────────────────── */
 export default function LoginPage() {
@@ -77,14 +151,13 @@ export default function LoginPage() {
 
       {/* ── GREEN HERO SECTION ── */}
       <div style={{
-        background: 'linear-gradient(160deg, #00A651 0%, #00C060 60%, #00A651 100%)',
+        background: '#044C23',
         flex: '0 0 auto',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop: 48,
-        paddingBottom: 40,
+        padding: '36px 20px 24px',
         position: 'relative',
         overflow: 'hidden',
       }}>
@@ -92,41 +165,33 @@ export default function LoginPage() {
         <div style={{
           position: 'absolute', top: -40, right: -40,
           width: 180, height: 180, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.08)',
+          background: 'rgba(255,255,255,0.06)',
         }} />
         <div style={{
           position: 'absolute', bottom: -30, left: -30,
           width: 140, height: 140, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.08)',
+          background: 'rgba(255,255,255,0.06)',
         }} />
 
         {/* User's Uploaded Logo Image */}
         <div style={{
-          width: 155,
-          height: 155,
-          borderRadius: 28,
+          width: 200,
+          maxHeight: 200,
+          borderRadius: 24,
           overflow: 'hidden',
-          boxShadow: '0 12px 32px rgba(0,0,0,0.35)',
-          border: '2px solid rgba(255,255,255,0.25)',
+          boxShadow: '0 12px 36px rgba(0,0,0,0.35)',
+          border: '2px solid rgba(255,255,255,0.2)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: '#042810'
+          background: '#044C23',
         }}>
-          <img src={logoImg} alt="GetGo Ride" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <img
+            src="logo.png"
+            alt="GetGo Ride Logo"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
         </div>
-
-        {/* Tagline */}
-        <p style={{
-          color: 'rgba(255,255,255,0.92)',
-          fontSize: '1rem',
-          fontWeight: 500,
-          marginTop: 20,
-          letterSpacing: '0.2px',
-          textAlign: 'center',
-        }}>
-          The ultimate transport network for India
-        </p>
       </div>
 
       {/* ── DARK BODY SECTION ── */}

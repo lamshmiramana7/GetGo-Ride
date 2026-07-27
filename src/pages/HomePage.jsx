@@ -3,7 +3,7 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 import { useAuth, useTheme, useLanguage } from '../App';
 import { MOCK_USER, MOCK_TRIPS, PROMO_BANNERS, SAVED_ADDRESSES, NOTIFICATIONS } from '../data/mockData';
 import NotificationPanel from '../components/NotificationPanel';
-import logoImg from '../assets/logo.png';
+import GetGoLogo from '../components/GetGoLogo';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -39,9 +39,7 @@ export default function HomePage() {
           <button id="menu-btn" onClick={openMenu} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 38, height: 38, borderRadius: 10, fontSize: '1.125rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             ☰
           </button>
-          <div style={{ width: 42, height: 42, borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(255,255,255,0.3)', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-            <img src={logoImg} alt="GetGo Ride Logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-          </div>
+          <img src="logo.png" alt="GetGo Ride" style={{ height: 38, objectFit: 'contain', borderRadius: 8 }} />
           <div style={{ display: 'flex', gap: 8 }}>
             <button
               id="theme-toggle-home-btn"

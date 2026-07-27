@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useLanguage } from '../App';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
 import { LOGO_BASE64 } from '../assets/logoBase64';
+import { LOGIN_HERO_BASE64 } from '../assets/loginHeroBase64';
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -86,25 +87,26 @@ export default function LoginPage() {
         boxShadow: 'var(--shadow-flat)',
         overflow: 'hidden',
       }}>
-        {/* Header featuring exact uploaded official GetGo RIDE logo image */}
+        {/* Header featuring exact uploaded GetGo RIDE logo picture */}
         <div style={{
-          backgroundColor: '#044C23',
-          padding: '28px 20px',
+          backgroundColor: '#0F172A',
+          padding: 0,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           textAlign: 'center',
+          overflow: 'hidden',
+          borderBottom: '1px solid var(--border)',
         }}>
           <img
-            src={LOGO_BASE64}
-            alt="GetGo Ride Logo"
+            src={LOGIN_HERO_BASE64}
+            alt="GetGo Ride Official Logo"
             style={{
               width: '100%',
-              maxWidth: 260,
               height: 'auto',
-              borderRadius: 16,
-              boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-              objectFit: 'contain'
+              maxHeight: 280,
+              objectFit: 'cover',
+              display: 'block',
             }}
           />
         </div>

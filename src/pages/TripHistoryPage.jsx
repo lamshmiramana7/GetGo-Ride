@@ -105,7 +105,7 @@ export default function TripHistoryPage() {
                   position: 'relative',
                   overflow: 'hidden'
                 }}>
-                  <img src={VEHICLE_IMAGES[trip.vehicle] || carImg} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <img src={VEHICLE_IMAGES[trip.vehicle] || VEHICLE_IMAGES.car} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
                   <div style={{
                     position: 'absolute',
                     bottom: 1,

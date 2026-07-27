@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, ChevronRight } from 'lucide-react';
 import { BUS_ROUTES } from '../data/mockData';
 import { TRAVEL_BANNER_BASE64, BUS_IMG_BASE64 } from '../assets/mediaBase64';
+import { useLanguage } from '../App';
 
 const POPULAR_ROUTES = [
   { from: 'Chennai', to: 'Madurai' },
@@ -15,6 +16,7 @@ const POPULAR_ROUTES = [
 
 export default function TravelPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [tab, setTab] = useState('bus'); // 'bus' | 'flights' | 'trains'
   const [searchFrom, setSearchFrom] = useState('Chennai');
   const [searchTo, setSearchTo] = useState('Madurai');
@@ -42,10 +44,10 @@ export default function TravelPage() {
         </button>
         <div>
           <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-            Intercity Travel
+            {t('travel') || 'Intercity Travel'}
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-            Bus tickets, flight bookings & train partner links
+            Bus, Flight & Train ticket booking across India
           </p>
         </div>
       </div>
@@ -56,13 +58,13 @@ export default function TravelPage() {
           { id: 'bus', label: 'Bus Tickets', icon: Bus },
           { id: 'flights', label: 'Flights', icon: Plane },
           { id: 'trains', label: 'Trains', icon: Compass },
-        ].map(t => {
-          const Icon = t.icon;
-          const isAct = tab === t.id;
+        ].map(tObj => {
+          const Icon = tObj.icon;
+          const isAct = tab === tObj.id;
           return (
             <button
-              key={t.id}
-              onClick={() => { setTab(t.id); setStep('search'); }}
+              key={tObj.id}
+              onClick={() => { setTab(tObj.id); setStep('search'); }}
               style={{
                 flex: 1,
                 height: 40,
@@ -79,7 +81,7 @@ export default function TravelPage() {
               }}
             >
               <Icon size={16} />
-              <span>{t.label}</span>
+              <span>{tObj.label}</span>
             </button>
           );
         })}
@@ -94,25 +96,25 @@ export default function TravelPage() {
               <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
                 <img src={TRAVEL_BANNER_BASE64} alt="Intercity Bus Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Intercity Volvo Bus & Travel</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>{t('travel') || 'Intercity Volvo Bus & Travel'}</div>
                   <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>AC Sleeper & Seater · Verified Operators</div>
                 </div>
               </div>
               <div>
                 <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Search Intercity Buses</h2>
-                <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC & Sleeper buses across Tamil Nadu</p>
+                <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC & Sleeper buses across Tamil Nadu & India</p>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <input
                   className="input-field"
-                  placeholder="From (Origin city)"
+                  placeholder={t('pickupPlaceholder') || 'From (Origin city)'}
                   value={searchFrom}
                   onChange={e => setSearchFrom(e.target.value)}
                 />
                 <input
                   className="input-field"
-                  placeholder="To (Destination city)"
+                  placeholder={t('dropoffPlaceholder') || 'To (Destination city)'}
                   value={searchTo}
                   onChange={e => setSearchTo(e.target.value)}
                 />
@@ -126,7 +128,7 @@ export default function TravelPage() {
 
               {/* Popular Routes */}
               <div>
-                <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>Popular Intercity Routes</div>
+                <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>{t('quickDestinations') || 'Popular Intercity Routes'}</div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {POPULAR_ROUTES.map((r, i) => (
                     <button
@@ -142,44 +144,48 @@ export default function TravelPage() {
               </div>
 
               <button className="btn-primary" onClick={handleSearch}>
-                Search Available Buses
+                {t('continueBtn') || 'Search Buses'}
               </button>
             </div>
           )}
 
           {step === 'results' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              <div className="flat-card" style={{ padding: 14, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{searchFrom} → {searchTo}</div>
-                  <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{travelDate}</div>
-                </div>
-                <button className="btn-secondary" onClick={() => setStep('search')} style={{ width: 'auto', height: 36, padding: '0 12px', fontSize: 13 }}>
-                  Modify Search
-                </button>
+              <div className="flat-card" style={{ padding: 12, display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 14 }}>
+                <span style={{ fontWeight: 600 }}>{searchFrom} → {searchTo}</span>
+                <span style={{ color: 'var(--text-muted)' }}>{travelDate}</span>
               </div>
 
+              <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Available Buses ({BUS_ROUTES.length})</h2>
+
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-                {BUS_ROUTES[0].departures.map(b => (
-                  <div key={b.id} className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                {BUS_ROUTES.map(b => (
+                  <div key={b.id} className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div>
                         <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{b.operator}</div>
-                        <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{b.type} · {b.seatsLeft} seats left</div>
+                        <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{b.busType}</div>
                       </div>
-                      <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--brand-green-text)' }}>₹{b.fare}</div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--brand-green-text)' }}>₹{b.fare}</div>
+                        <div className="badge-flat-green" style={{ fontSize: 11 }}>{b.seatsLeft} seats left</div>
+                      </div>
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: 'var(--text-secondary)' }}>
-                      <span>Departure: {b.time}</span>
-                      <span>Arrival: {b.arrival}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-secondary)', padding: 10, borderRadius: 'var(--radius-sm)', fontSize: 13 }}>
+                      <div>
+                        <strong>{b.departureTime}</strong><br />
+                        <span style={{ color: 'var(--text-muted)' }}>{searchFrom}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>{b.duration}</div>
+                      <div style={{ textAlign: 'right' }}>
+                        <strong>{b.arrivalTime}</strong><br />
+                        <span style={{ color: 'var(--text-muted)' }}>{searchTo}</span>
+                      </div>
                     </div>
 
-                    <button
-                      className="btn-primary"
-                      onClick={() => { setSelectedTicket(b); setStep('confirmed'); }}
-                    >
-                      Book Ticket — ₹{b.fare}
+                    <button className="btn-primary" onClick={() => { setSelectedTicket(b); setStep('confirmed'); }}>
+                      {t('confirmBooking') || 'Book Seat'} — ₹{b.fare}
                     </button>
                   </div>
                 ))}
@@ -189,87 +195,50 @@ export default function TravelPage() {
 
           {step === 'confirmed' && selectedTicket && (
             <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-              <div>
-                <span className="badge-flat-green"><Check size={14} /> Bus Booking Confirmed</span>
-                <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>E-Ticket Reserved</h2>
+              <div style={{ textAlign: 'center' }}>
+                <span className="badge-flat-green"><Check size={14} /> Ticket Confirmed</span>
+                <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>{selectedTicket.operator}</h2>
+                <p className="text-caption" style={{ color: 'var(--text-muted)' }}>PNR: #GG-BUS-{Date.now().toString().slice(-6)}</p>
               </div>
 
-              <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 8, fontSize: 14 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Operator</span>
-                  <span style={{ fontWeight: 600 }}>{selectedTicket.operator}</span>
-                </div>
+              <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Route</span>
                   <span style={{ fontWeight: 600 }}>{searchFrom} → {searchTo}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Departure</span>
-                  <span style={{ fontWeight: 600 }}>{selectedTicket.time} ({travelDate})</span>
+                  <span style={{ color: 'var(--text-secondary)' }}>Date & Time</span>
+                  <span style={{ fontWeight: 600 }}>{travelDate} at {selectedTicket.departureTime}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--text-secondary)' }}>Seat No</span>
+                  <span style={{ fontWeight: 600 }}>A12 (Window)</span>
                 </div>
                 <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
-                  <span>Fare Paid</span>
+                  <span>Total Paid</span>
                   <span style={{ color: 'var(--brand-green-text)' }}>₹{selectedTicket.fare}</span>
                 </div>
               </div>
 
-              <button className="btn-primary" onClick={() => navigate('/')}>
-                Return to Dashboard
+              <button className="btn-primary" onClick={() => { setStep('search'); navigate('/'); }}>
+                {t('home') || 'Return to Home Dashboard'}
               </button>
             </div>
           )}
         </>
       )}
 
-      {/* ── FLIGHTS PARTNER TAB ── */}
-      {tab === 'flights' && (
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Flight Booking Partner</h2>
-            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Book domestic & international flights via IndiGo</p>
-          </div>
-
-          <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>IndiGo Flight Partner Redirect</div>
-            <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Search best airfares across Indian destinations with GetGo partner integration.</div>
-          </div>
-
-          <a
-            href="https://www.goindigo.in/?utm_source=google&utm_medium=cpc&utm_campaign=Brand_Search_Core_Exact&gad_source=1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-            style={{ display: 'inline-flex', textDecoration: 'none' }}
-          >
-            <span>Proceed to IndiGo Flight Partner</span>
-            <ExternalLink size={16} />
-          </a>
-        </div>
-      )}
-
-      {/* ── TRAINS PARTNER TAB ── */}
-      {tab === 'trains' && (
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>IRCTC Train Partner</h2>
-            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Book train tickets & check PNR status via ConfirmTkt</p>
-          </div>
-
-          <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>ConfirmTkt IRCTC Partner Redirect</div>
-            <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Check live seat availability, Tatkal booking, and PNR status.</div>
-          </div>
-
-          <a
-            href="https://www.confirmtkt.com/rbooking/?utm_source=Google&utm_medium=Search_CPC&utm_campaign=Brand_Confirmtkt&gclid=CjwKCAiAy2C9BhA4EiwAY2Z41E9G2p1y"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-            style={{ display: 'inline-flex', textDecoration: 'none' }}
-          >
-            <span>Proceed to ConfirmTkt Train Partner</span>
-            <ExternalLink size={16} />
-          </a>
+      {/* ── FLIGHTS / TRAINS PLACEHOLDER ── */}
+      {tab !== 'bus' && (
+        <div className="flat-card" style={{ textAlign: 'center', padding: 36, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
+          <Compass size={40} color="var(--brand-green-text)" />
+          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{tab === 'flights' ? 'Intercity Flight Search' : 'IRCTC Train Booking'}</h2>
+          <p className="text-caption" style={{ color: 'var(--text-secondary)', maxWidth: 320 }}>
+            Compare lowest fares across major airlines & IRCTC train routes with GetGo 0% booking convenience fee.
+          </p>
+          <button className="btn-primary" onClick={() => setTab('bus')}>
+            Switch to Intercity Bus Search
+          </button>
         </div>
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker } from 'react-leaflet';
 import L from 'leaflet';
@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { Package, MapPin, User, Phone, ArrowLeft, ShieldCheck, Check, Truck, ChevronRight, FileText } from 'lucide-react';
 import { MOCK_DRIVERS, SAVED_ADDRESSES, CHENNAI_LOCATIONS } from '../data/mockData';
 import { PARCEL_BANNER_BASE64 } from '../assets/mediaBase64';
+import { useLanguage } from '../App';
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -20,6 +21,7 @@ const DROP_ICON = L.divIcon({ className: '', html: `<div style="background:#DC26
 
 export default function ParcelPage() {
   const navigate = useNavigate();
+  const { t } = useLanguage();
   const [step, setStep] = useState('form'); // 'form' | 'confirm' | 'tracking'
   const [pickup, setPickup] = useState('');
   const [dropoff, setDropoff] = useState('');
@@ -44,14 +46,22 @@ export default function ParcelPage() {
   const selectLoc = (loc, field) => {
     if (field === 'pickup') { setPickup(loc.name); setPickupCoords({ lat: loc.lat, lng: loc.lng }); }
     else { setDropoff(loc.name); setDropCoords({ lat: loc.lat, lng: loc.lng }); }
-    setSearchSuggestions([]); setActiveField(null);
+    setSearchSuggestions([]);
+    setActiveField(null);
   };
 
-  const fare = dropCoords ? 75 : 65;
+  const handleConfirmParcel = () => {
+    setIsDispatching(true);
+    setTimeout(() => {
+      setIsDispatching(false);
+      setStep('tracking');
+      setTrackingState('arriving');
+    }, 1200);
+  };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      {/* Top Header */}
+      {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <button
           className="btn-secondary"
@@ -65,7 +75,7 @@ export default function ParcelPage() {
         </button>
         <div>
           <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-            Send a Parcel
+            {t('sendParcelTitle') || 'Send a Parcel'}
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
             Doorstep pickup & express bike delivery
@@ -80,13 +90,13 @@ export default function ParcelPage() {
           <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
             <img src={PARCEL_BANNER_BASE64} alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Express Parcel Delivery</div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>{t('sendParcelTitle') || 'Express Parcel Delivery'}</div>
               <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>Doorstep Pickup & Sealed Package Delivery</div>
             </div>
           </div>
 
           <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Pickup & Delivery Details</h2>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('parcelDetails') || 'Pickup & Delivery Details'}</h2>
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Enter location & recipient information</p>
           </div>
 
@@ -94,7 +104,7 @@ export default function ParcelPage() {
             <div style={{ position: 'relative' }}>
               <input
                 className="input-field"
-                placeholder="Pickup location..."
+                placeholder={t('pickupPlaceholder') || 'Pickup location...'}
                 value={pickup}
                 onChange={e => { setPickup(e.target.value); handleSearch(e.target.value, 'pickup'); }}
                 onFocus={() => setActiveField('pickup')}
@@ -113,7 +123,7 @@ export default function ParcelPage() {
             <div style={{ position: 'relative' }}>
               <input
                 className="input-field"
-                placeholder="Delivery address..."
+                placeholder={t('dropoffPlaceholder') || 'Delivery address...'}
                 value={dropoff}
                 onChange={e => { setDropoff(e.target.value); handleSearch(e.target.value, 'dropoff'); }}
                 onFocus={() => setActiveField('dropoff')}
@@ -128,26 +138,23 @@ export default function ParcelPage() {
                 </div>
               )}
             </div>
-          </div>
 
-          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 16, display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <h3 className="text-body-medium" style={{ color: 'var(--text-primary)' }}>Recipient Information</h3>
             <input
               className="input-field"
-              placeholder="Recipient name"
+              placeholder={t('recipientName') || "Recipient's Full Name"}
               value={recipientName}
               onChange={e => setRecipientName(e.target.value)}
             />
             <input
               className="input-field"
-              placeholder="Recipient mobile number (+91)"
               type="tel"
+              placeholder={t('recipientPhone') || "Recipient's Phone Number"}
               value={recipientPhone}
               onChange={e => setRecipientPhone(e.target.value)}
             />
             <input
               className="input-field"
-              placeholder="Parcel contents (e.g. Documents, Keys, Clothes)"
+              placeholder={t('parcelDesc') || 'Parcel Description (Docs, Electronics, Keys)'}
               value={parcelDesc}
               onChange={e => setParcelDesc(e.target.value)}
             />
@@ -158,82 +165,75 @@ export default function ParcelPage() {
             disabled={!pickup || !dropoff || !recipientName || !recipientPhone}
             onClick={() => setStep('confirm')}
           >
-            Review Order & Pricing (₹{fare})
+            {t('findRiders') || 'Find Bike Delivery Riders'}
           </button>
         </div>
       )}
 
-      {/* ── STEP 2: CONFIRM PARCEL BOOKING ── */}
+      {/* ── STEP 2: CONFIRM PARCEL ── */}
       {step === 'confirm' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Confirm Express Parcel</h2>
-            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Assigning nearest GetGo Delivery Partner</p>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('confirmBooking') || 'Parcel Delivery Summary'}</h2>
+            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express Bike Delivery · Insured & Tracked</p>
           </div>
 
           <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Pickup</span>
+              <span style={{ color: 'var(--text-secondary)' }}>From</span>
               <span style={{ fontWeight: 600 }}>{pickup}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span style={{ color: 'var(--text-secondary)' }}>To</span>
+              <span style={{ fontWeight: 600 }}>{dropoff}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--text-secondary)' }}>Recipient</span>
               <span style={{ fontWeight: 600 }}>{recipientName} ({recipientPhone})</span>
             </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span style={{ color: 'var(--text-secondary)' }}>Delivery Fee</span>
-              <span style={{ fontWeight: 700, color: 'var(--brand-green-text)' }}>₹{fare}</span>
+            <div style={{ borderTop: '1px solid var(--border)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span className="text-body-medium">{t('totalFare') || 'Express Fare'}</span>
+              <span style={{ fontSize: 22, fontWeight: 700, color: 'var(--brand-green-text)' }}>₹65</span>
             </div>
           </div>
 
-          <button
-            className="btn-primary"
-            onClick={() => {
-              setIsDispatching(true);
-              setTimeout(() => {
-                setIsDispatching(false);
-                setStep('tracking');
-              }, 1200);
-            }}
-            disabled={isDispatching}
-          >
-            {isDispatching ? 'Assigning Courier…' : `Confirm Parcel Delivery — ₹${fare}`}
+          <button className="btn-primary" onClick={handleConfirmParcel} disabled={isDispatching}>
+            {isDispatching ? 'Assigning Rider…' : `${t('confirmBooking') || 'Confirm Delivery'} — ₹65`}
           </button>
         </div>
       )}
 
-      {/* ── STEP 3: TRACKING ── */}
+      {/* ── STEP 3: LIVE PARCEL TRACKING ── */}
       {step === 'tracking' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div>
-            <span className="badge-flat-green">
-              <Check size={14} /> Courier Dispatched
-            </span>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>
-              {trackingState === 'arriving' ? 'Delivery Partner en route for pickup' : 'Parcel Picked Up & In Transit'}
-            </h2>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <span className="badge-flat-green">
+                <Check size={14} /> Parcel Dispatched
+              </span>
+              <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>
+                {trackingState === 'arriving' ? 'Delivery rider picking up parcel' : 'Parcel Out for Delivery'}
+              </h2>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: 13, color: 'var(--text-muted)' }}>
+              Delivery PIN<br />
+              <strong style={{ fontSize: 18, color: 'var(--brand-green-text)', letterSpacing: 2 }}>8 1 9 2</strong>
+            </div>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 16, backgroundColor: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)' }}>
-            <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: 'var(--brand-green)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 16 }}>
+            <div style={{ width: 44, height: 44, borderRadius: '50%', backgroundColor: 'var(--brand-green)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
               {selectedDriver.name[0]}
             </div>
             <div style={{ flex: 1 }}>
               <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{selectedDriver.name}</div>
-              <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Express Bike Delivery Partner</div>
+              <div className="text-caption" style={{ color: 'var(--text-muted)' }}>GetGo Bike Courier · {selectedDriver.vehicleNo}</div>
             </div>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {trackingState === 'arriving' && (
-              <button className="btn-primary" onClick={() => setTrackingState('inTransit')}>
-                Mark Parcel Picked Up
-              </button>
-            )}
-            <button className="btn-secondary" onClick={() => navigate('/')}>
-              Return to Dashboard
-            </button>
-          </div>
+          <button className="btn-primary" onClick={() => navigate('/')}>
+            {t('home') || 'Return to Home Dashboard'}
+          </button>
         </div>
       )}
     </div>

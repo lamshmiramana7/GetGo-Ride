@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useLanguage } from '../App';
-import { ArrowLeft, ShieldCheck, Globe, CheckCircle2, Lock, Sparkles, Smartphone, ChevronRight, Navigation, Award } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Globe, CheckCircle2, Lock, Sparkles, Smartphone, ChevronRight, Navigation, Award, Star } from 'lucide-react';
 import { LOGO_BASE64 } from '../assets/logoBase64';
-import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
 import { RIDE_BANNER_BASE64, DRIVER_AVATAR_BASE64 } from '../assets/mediaBase64';
 
 const LANGUAGES = [
@@ -99,7 +98,7 @@ export default function LoginPage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        {/* GetGo Rider Banner Header */}
+        {/* Professional Header Banner with Official GetGo Logo & Commercial HD Photo */}
         <div style={{
           background: 'linear-gradient(180deg, #044C23 0%, #022B14 100%)',
           padding: '24px 20px 20px',
@@ -128,61 +127,49 @@ export default function LoginPage() {
             />
           </div>
 
-          {/* Real HD GetGo Rider Picture Feature Card */}
+          {/* Professional Commercial HD Picture Banner */}
           <div style={{
             width: '100%',
-            backgroundColor: 'rgba(255, 255, 255, 0.06)',
+            height: 120,
             borderRadius: 16,
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            padding: 12,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 14,
-            textAlign: 'left'
+            overflow: 'hidden',
+            position: 'relative',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
           }}>
-            {/* GetGo Bike Cutout with Sticker Overlay */}
+            <img src={RIDE_BANNER_BASE64} alt="GetGo Professional Transport" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{
-              width: 72,
-              height: 72,
-              borderRadius: 14,
-              backgroundColor: '#FFFFFF',
-              border: '2px solid var(--brand-green)',
-              padding: 4,
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(90deg, rgba(4, 76, 35, 0.9) 0%, rgba(2, 43, 20, 0.4) 100%)',
+              padding: '14px 16px',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              flexShrink: 0,
-              boxShadow: '0 6px 16px rgba(0,0,0,0.3)'
+              justifyContent: 'space-between'
             }}>
-              <img src={VEHICLE_BASE64.bike} alt="GetGo Bike Rider" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-              <div style={{
-                position: 'absolute',
-                bottom: 2,
-                right: 2,
-                backgroundColor: '#1B5E20',
-                color: '#FFFFFF',
-                fontSize: 8,
-                fontWeight: 800,
-                padding: '2px 4px',
-                borderRadius: 4,
-                letterSpacing: '0.05em'
-              }}>
-                GetGo
-              </div>
-            </div>
-
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span className="badge-flat-green" style={{ fontSize: 10, padding: '2px 6px' }}>
-                  <Award size={12} /> Certified Rider Partner
+              <div style={{ textAlign: 'left' }}>
+                <span className="badge-flat-green" style={{ fontSize: 10, padding: '2px 8px', marginBottom: 4 }}>
+                  <Star size={11} fill="currentColor" /> Verified 4.9 ★ Partner
                 </span>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF', marginTop: 2 }}>
+                  GetGo Transport Network
+                </div>
+                <div style={{ fontSize: 11, color: 'var(--brand-green-text)', marginTop: 2 }}>
+                  Professional Drivers · Fast Delivery ⚡
+                </div>
               </div>
-              <div style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginTop: 4 }}>
-                GetGo Express Rider
-              </div>
-              <div style={{ fontSize: 11, color: 'rgba(255, 255, 255, 0.75)', marginTop: 2 }}>
-                Verified Captains · Helmet & Safety Verified 🛡️
+
+              {/* Driver Portrait Photo Cutout */}
+              <div style={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                overflow: 'hidden',
+                border: '2px solid #FFFFFF',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                flexShrink: 0
+              }}>
+                <img src={DRIVER_AVATAR_BASE64} alt="Professional GetGo Captain" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
             </div>
           </div>

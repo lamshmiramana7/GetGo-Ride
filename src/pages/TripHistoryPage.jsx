@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
+import { Car, Package, Compass, Calendar, MapPin, Check, Star, X } from 'lucide-react';
 import { MOCK_TRIPS } from '../data/mockData';
-import bikeImg from '../assets/bike.png';
-import autoImg from '../assets/auto.png';
-import carImg from '../assets/car.png';
-import vanImg from '../assets/van.png';
-import parcelImg from '../assets/parcel.png';
-import busImg from '../assets/bus.png';
 
-const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg, bus: busImg, parcel: parcelImg };
 const FILTERS = ['All', 'Rides', 'Parcels', 'Travel'];
 
 export default function TripHistoryPage() {
@@ -21,163 +15,149 @@ export default function TripHistoryPage() {
     return true;
   });
 
+  const totalSpent = MOCK_TRIPS.reduce((s, t) => s + t.fare, 0);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      <div className="top-bar">
-        <span className="top-bar-title">Trip History</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      {/* Header */}
+      <div>
+        <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
+          Trip History
+        </h1>
+        <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+          Your past rides, parcel deliveries & intercity travel receipts
+        </p>
       </div>
 
-      {/* Filters */}
-      <div style={{ padding: '10px 16px', display: 'flex', gap: 8, background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border)', overflowX: 'auto' }}>
-        {FILTERS.map(f => (
-          <button key={f} id={`filter-${f}`} onClick={() => setFilter(f)}
-            style={{ flexShrink: 0, padding: '6px 16px', borderRadius: 'var(--radius-full)', fontSize: '0.8125rem', fontWeight: 600, cursor: 'pointer', border: filter === f ? 'none' : '1px solid var(--border)', background: filter === f ? 'var(--brand-green)' : 'var(--bg-card)', color: filter === f ? '#fff' : 'var(--text-muted)', transition: 'var(--transition)' }}>
-            {f}
-          </button>
-        ))}
+      {/* Stats Bar (Flat Cards) */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+        <div className="flat-card" style={{ padding: 12, textAlign: 'center' }}>
+          <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Total Trips</div>
+          <div className="text-subtitle" style={{ color: 'var(--text-primary)', marginTop: 2 }}>{MOCK_TRIPS.length}</div>
+        </div>
+        <div className="flat-card" style={{ padding: 12, textAlign: 'center' }}>
+          <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Total Spent</div>
+          <div className="text-subtitle" style={{ color: 'var(--brand-green-text)', marginTop: 2 }}>₹{totalSpent}</div>
+        </div>
+        <div className="flat-card" style={{ padding: 12, textAlign: 'center' }}>
+          <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Avg Rating</div>
+          <div className="text-subtitle" style={{ color: 'var(--text-primary)', marginTop: 2 }}>4.8 ★</div>
+        </div>
       </div>
 
-      {/* Stats row */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: 'var(--border)', borderBottom: '1px solid var(--border)' }}>
-        {[
-          { label: 'Total Trips', value: MOCK_TRIPS.length },
-          { label: 'Total Spent', value: `₹${MOCK_TRIPS.reduce((s, t) => s + t.fare, 0)}` },
-          { label: 'Avg Rating', value: '⭐ ' + (MOCK_TRIPS.reduce((s, t) => s + (t.rating || 4), 0) / MOCK_TRIPS.length).toFixed(1) },
-        ].map(stat => (
-          <div key={stat.label} style={{ background: 'var(--bg-secondary)', padding: '12px 8px', textAlign: 'center' }}>
-            <div style={{ fontFamily: 'Poppins', fontWeight: 700, fontSize: '1rem' }}>{stat.value}</div>
-            <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)', marginTop: 2, textTransform: 'uppercase', letterSpacing: '0.03em' }}>{stat.label}</div>
-          </div>
-        ))}
+      {/* Filter Tabs */}
+      <div style={{ display: 'flex', gap: 8, overflowX: 'auto' }}>
+        {FILTERS.map(f => {
+          const isAct = filter === f;
+          return (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={isAct ? 'badge-flat-green' : 'badge-flat'}
+              style={{ padding: '8px 16px', cursor: 'pointer', fontSize: 14 }}
+            >
+              {f}
+            </button>
+          );
+        })}
       </div>
 
-      <div style={{ flex: 1, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      {/* Trip List */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
         {filtered.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">🗺️</div>
-            <div className="empty-title">No trips found</div>
-            <div className="empty-sub">Your {filter.toLowerCase()} will appear here</div>
+          <div className="flat-card" style={{ padding: 32, textAlign: 'center', color: 'var(--text-muted)' }}>
+            No trips found for {filter.toLowerCase()}.
           </div>
-        ) : filtered.map(trip => (
-          <TripCard key={trip.id} trip={trip} onOpen={() => setSelected(trip)} />
-        ))}
+        ) : (
+          filtered.map(trip => {
+            const Icon = trip.type === 'parcel' ? Package : trip.type === 'travel' ? Compass : Car;
+            const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+
+            return (
+              <div
+                key={trip.id}
+                className="flat-card-interactive"
+                onClick={() => setSelected(trip)}
+                style={{ display: 'flex', alignItems: 'center', gap: 16 }}
+              >
+                <div style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--brand-green-tint)',
+                  color: 'var(--brand-green-text)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}>
+                  <Icon size={22} />
+                </div>
+
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                    <div className="text-body-medium" style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 220 }}>
+                      {trip.dropoff}
+                    </div>
+                    <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--brand-green-text)', flexShrink: 0 }}>
+                      ₹{trip.fare}
+                    </div>
+                  </div>
+                  <div className="text-caption" style={{ color: 'var(--text-muted)', marginTop: 4 }}>
+                    {date} · {trip.distance} km · {trip.paymentMethod}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
-      {selected && <TripDetail trip={selected} onClose={() => setSelected(null)} />}
-    </div>
-  );
-}
-
-function TripCard({ trip, onOpen }) {
-  const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
-  const typeLabel = { ride: 'Ride', parcel: 'Parcel', travel: 'Travel' }[trip.type];
-  const typeBadge = { ride: 'badge-blue', parcel: 'badge-gold', travel: 'badge-green' }[trip.type];
-  const vehicleImg = VEHICLE_IMAGES[trip.vehicle] || (trip.type === 'parcel' ? parcelImg : trip.type === 'travel' ? busImg : carImg);
-
-  return (
-    <div id={`history-trip-${trip.id}`} className="trip-card" onClick={onOpen}>
-      <div style={{ width: 52, height: 52, background: 'var(--bg-input)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, padding: 6, overflow: 'hidden' }}>
-        <img src={vehicleImg} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{date}</div>
-            <div style={{ fontWeight: 600, fontSize: '0.9375rem', marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 160 }}>
-              {trip.dropoff}
-            </div>
-          </div>
-          <div style={{ fontFamily: 'Poppins', fontWeight: 800, color: 'var(--brand-green)', fontSize: '1.0625rem', flexShrink: 0 }}>₹{trip.fare}</div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 6 }}>
-          <span className={`badge ${typeBadge}`}>{typeLabel}</span>
-          {trip.driver && <span className="rating-badge">⭐ {trip.rating}</span>}
-          <span style={{ fontSize: '0.6875rem', color: 'var(--text-muted)' }}>{trip.distance} km · {trip.paymentMethod}</span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TripDetail({ trip, onClose }) {
-  const icons = { bike: '🏍️', auto: '🛺', car: '🚗', van: '🚐', bus: '🚌' };
-  const date = new Date(trip.date).toLocaleString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-  return (
-    <div className="bottom-sheet-overlay" onClick={onClose}>
-      <div className="bottom-sheet" onClick={e => e.stopPropagation()}>
-        <div className="bottom-sheet-handle" />
-        <div style={{ padding: '16px 16px 32px', display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {/* Header */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontFamily: 'Poppins', fontSize: '1.125rem', fontWeight: 700 }}>Trip Receipt</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>{date}</div>
-            </div>
-            <span className="status-pill status-completed"><span className="status-dot" />Completed</span>
-          </div>
-
-          {/* Route */}
-          <div className="card" style={{ padding: 14 }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#2563EB', flexShrink: 0, marginTop: 2 }} />
-                <div><div style={{ fontSize: '0.625rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Pickup</div><div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{trip.pickup}</div></div>
-              </div>
-              <div style={{ borderLeft: '2px dashed var(--border)', marginLeft: 7, height: 10 }} />
-              <div style={{ display: 'flex', gap: 12 }}>
-                <div style={{ width: 16, height: 16, borderRadius: '50%', background: '#EF4444', flexShrink: 0, marginTop: 2 }} />
-                <div><div style={{ fontSize: '0.625rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>Drop-off</div><div style={{ fontWeight: 600, fontSize: '0.875rem' }}>{trip.dropoff}</div></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Driver */}
-          {trip.driver && (
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '12px 14px', border: '1px solid var(--border)' }}>
-              <div style={{ width: 46, height: 46, background: 'var(--bg-input)', borderRadius: 12, padding: 4, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden' }}>
-                <img src={VEHICLE_IMAGES[trip.vehicle] || carImg} alt={trip.vehicle} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontWeight: 700, fontSize: '0.9375rem' }}>{trip.driver.name}</div>
-                <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: 2 }}>{trip.driver.vehicleModel} · {trip.driver.vehicleNo}</div>
-              </div>
-              <span className="rating-badge">⭐ {trip.driver.rating}</span>
-            </div>
-          )}
-
-          {/* Fare */}
-          <div className="card" style={{ padding: 14 }}>
-            <div style={{ fontWeight: 700, marginBottom: 10 }}>Fare Breakdown</div>
-            {[
-              { label: 'Base fare', val: Math.round(trip.fare * 0.7) },
-              { label: `Distance (${trip.distance} km)`, val: Math.round(trip.fare * 0.25) },
-              { label: 'Taxes & fees', val: Math.round(trip.fare * 0.05) },
-            ].map(row => (
-              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8, fontSize: '0.875rem' }}>
-                <span style={{ color: 'var(--text-muted)' }}>{row.label}</span>
-                <span>₹{row.val}</span>
-              </div>
-            ))}
-            <div className="divider" />
+      {/* Trip Detail Receipt Modal */}
+      {selected && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div className="flat-card" style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontWeight: 700 }}>Total</span>
-              <span style={{ fontFamily: 'Poppins', fontWeight: 800, fontSize: '1.25rem', color: 'var(--brand-green)' }}>₹{trip.fare}</span>
+              <div>
+                <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Trip Receipt</h2>
+                <div className="text-caption" style={{ color: 'var(--text-muted)' }}>
+                  {new Date(selected.date).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                </div>
+              </div>
+              <button onClick={() => setSelected(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
+                <X size={18} />
+              </button>
             </div>
-            <div style={{ marginTop: 8, fontSize: '0.75rem', color: 'var(--text-muted)' }}>Paid via {trip.paymentMethod}</div>
+
+            <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Pickup</span>
+                <span style={{ fontWeight: 600 }}>{selected.pickup}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Destination</span>
+                <span style={{ fontWeight: 600 }}>{selected.dropoff}</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Distance</span>
+                <span style={{ fontWeight: 600 }}>{selected.distance} km</span>
+              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span style={{ color: 'var(--text-secondary)' }}>Payment Method</span>
+                <span style={{ fontWeight: 600 }}>{selected.paymentMethod}</span>
+              </div>
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
+                <span>Total Amount Paid</span>
+                <span style={{ color: 'var(--brand-green-text)', fontSize: 18 }}>₹{selected.fare}</span>
+              </div>
+            </div>
+
+            <button className="btn-primary" onClick={() => setSelected(null)}>
+              Close Receipt
+            </button>
           </div>
-
-          {/* Rating your trip */}
-          {trip.rating && (
-            <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-lg)', padding: '12px 14px', border: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Your rating</span>
-              <span style={{ color: 'var(--gold)', fontWeight: 700 }}>{'⭐'.repeat(trip.rating)} ({trip.rating}/5)</span>
-            </div>
-          )}
-
-          <button id="close-receipt-btn" className="btn btn-ghost" onClick={onClose}>Close</button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import bikeImg from '../assets/bike.png';
 import autoImg from '../assets/auto.png';
 import carImg from '../assets/car.png';
 import vanImg from '../assets/van.png';
+import driverAvatarImg from '../assets/driver_avatar.png';
 
 const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
 
@@ -634,11 +635,7 @@ function TrackingScreen({ driver, pickup, dropoff, tracking, driverPos, pickupCo
         {driver && (
           <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1.5px solid var(--brand-green)', padding: 16, display: 'flex', gap: 14 }}>
             <div style={{ width: 56, height: 56, background: 'var(--bg-input)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, border: '2px solid var(--brand-green)', overflow: 'hidden' }}>
-              {driver.photo ? (
-                <img src={driver.photo} alt={driver.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              ) : (
-                <span style={{ fontSize: '1.75rem' }}>{vehicleIcon}</span>
-              )}
+              <img src={driverAvatarImg} alt={driver?.name || 'Driver'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'Poppins', fontWeight: 700, fontSize: '1.0625rem' }}>{driver.name}</div>

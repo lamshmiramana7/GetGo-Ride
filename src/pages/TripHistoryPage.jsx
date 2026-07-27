@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Car, Package, Compass, Calendar, MapPin, Check, Star, X } from 'lucide-react';
 import { MOCK_TRIPS } from '../data/mockData';
-import bikeImg from '../assets/bike.png';
-import autoImg from '../assets/auto.png';
-import carImg from '../assets/car.png';
-import vanImg from '../assets/van.png';
+import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
 
-const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
+const VEHICLE_IMAGES = VEHICLE_BASE64;
 const FILTERS = ['All', 'Rides', 'Parcels', 'Travel'];
 
 export default function TripHistoryPage() {

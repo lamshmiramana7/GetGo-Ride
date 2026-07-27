@@ -5,13 +5,10 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Zap, Car, Truck, MapPin, ArrowLeft, ShieldCheck, Check, Clock, CreditCard, ChevronRight, User, Phone, Star, AlertCircle } from 'lucide-react';
 import { MOCK_DRIVERS, VEHICLE_CATEGORIES, SAVED_ADDRESSES, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
-import bikeImg from '../assets/bike.png';
-import autoImg from '../assets/auto.png';
-import carImg from '../assets/car.png';
-import vanImg from '../assets/van.png';
+import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
 import GetGoLogo from '../components/GetGoLogo';
 
-const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
+const VEHICLE_IMAGES = VEHICLE_BASE64;
 
 // Fix Leaflet default marker icons
 delete L.Icon.Default.prototype._getIconUrl;

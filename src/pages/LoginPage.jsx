@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../App';
-import logoImg from '../assets/logo.png';
+import { LOGO_BASE64 } from '../assets/logoBase64';
 
 /* ── Inline App Icon Logo (matches screenshot style) ─────────────────── */
 function AppIconLogo() {
@@ -177,8 +177,7 @@ export default function LoginPage() {
         {/* User's Uploaded Logo Image */}
         <div style={{
           width: 220,
-          height: 220,
-          borderRadius: 28,
+          borderRadius: 24,
           overflow: 'hidden',
           boxShadow: '0 12px 36px rgba(0,0,0,0.4)',
           border: '2px solid rgba(255,255,255,0.25)',
@@ -188,9 +187,9 @@ export default function LoginPage() {
           background: '#044C23',
         }}>
           <img
-            src={logoImg}
+            src={LOGO_BASE64}
             alt="GetGo Ride Logo"
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'contain' }}
           />
         </div>
       </div>

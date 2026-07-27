@@ -4,6 +4,7 @@ import { Car, Package, Compass, MapPin, Search, Sun, Moon, ChevronRight, Home as
 import { useAuth, useTheme, useLanguage } from '../App';
 import { MOCK_USER, MOCK_TRIPS, SAVED_ADDRESSES } from '../data/mockData';
 import GetGoLogo from '../components/GetGoLogo';
+import { RIDE_BANNER_BASE64, PARCEL_BANNER_BASE64, TRAVEL_BANNER_BASE64 } from '../assets/mediaBase64';
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -20,21 +21,21 @@ export default function HomePage() {
       id: 'ride',
       title: t('bookRide') || 'Book a Ride',
       subtitle: 'Bike · Auto · Car · Van',
-      icon: Car,
+      image: RIDE_BANNER_BASE64,
       path: '/ride',
     },
     {
       id: 'parcel',
       title: t('sendParcel') || 'Send Parcel',
       subtitle: 'Doorstep pickup & express delivery',
-      icon: Package,
+      image: PARCEL_BANNER_BASE64,
       path: '/parcel',
     },
     {
       id: 'travel',
       title: t('travel') || 'Intercity Travel',
       subtitle: 'Bus · Flight · Train tickets',
-      icon: Compass,
+      image: TRAVEL_BANNER_BASE64,
       path: '/travel',
     },
   ];
@@ -118,41 +119,36 @@ export default function HomePage() {
           {t('bookRide') || 'Services'}
         </h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
-          {SERVICES.map(svc => {
-            const Icon = svc.icon;
-            return (
-              <div
-                key={svc.id}
-                id={`service-${svc.id}`}
-                className="flat-card-interactive"
-                onClick={() => navigate(svc.path)}
-                style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 20 }}
-              >
-                <div style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 'var(--radius-md)',
-                  backgroundColor: 'var(--brand-green-tint)',
-                  color: 'var(--brand-green-text)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}>
-                  <Icon size={24} />
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>
-                    {svc.title}
-                  </div>
-                  <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>
-                    {svc.subtitle}
-                  </div>
-                </div>
-                <ChevronRight size={18} color="var(--text-muted)" />
+          {SERVICES.map(svc => (
+            <div
+              key={svc.id}
+              id={`service-${svc.id}`}
+              className="flat-card-interactive"
+              onClick={() => navigate(svc.path)}
+              style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 14 }}
+            >
+              <div style={{
+                width: 68,
+                height: 52,
+                borderRadius: 'var(--radius-md)',
+                overflow: 'hidden',
+                backgroundColor: 'var(--bg-secondary)',
+                border: '1px solid var(--border)',
+                flexShrink: 0,
+              }}>
+                <img src={svc.image} alt={svc.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               </div>
-            );
-          })}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>
+                  {svc.title}
+                </div>
+                <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>
+                  {svc.subtitle}
+                </div>
+              </div>
+              <ChevronRight size={18} color="var(--text-muted)" />
+            </div>
+          ))}
         </div>
       </div>
 

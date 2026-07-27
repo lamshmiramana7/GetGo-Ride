@@ -6,6 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { Zap, Car, Truck, MapPin, ArrowLeft, Check, Phone, CreditCard, X, ChevronRight } from 'lucide-react';
 import { MOCK_DRIVERS, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
 import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
+import { RIDE_BANNER_BASE64, DRIVER_AVATAR_BASE64 } from '../assets/mediaBase64';
 import { useLanguage } from '../App';
 
 const VEHICLE_IMAGES = VEHICLE_BASE64;
@@ -155,6 +156,15 @@ export default function RideBookingPage() {
       {/* ── STEP 1: LOCATION INPUT ── */}
       {step === 'location' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Professional Hero Banner Picture */}
+          <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
+            <img src={RIDE_BANNER_BASE64} alt="City Rides" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Instant City Rides</div>
+              <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>Fast Bike, Auto & Sedan Pickups · Flat Rate</div>
+            </div>
+          </div>
+
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             <div style={{ position: 'relative' }}>
               <div style={{ position: 'absolute', left: 14, top: 18, width: 10, height: 10, borderRadius: '50%', backgroundColor: '#2563EB' }} />

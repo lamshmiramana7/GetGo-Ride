@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, ChevronRight } from 'lucide-react';
 import { BUS_ROUTES } from '../data/mockData';
+import { TRAVEL_BANNER_BASE64, BUS_IMG_BASE64 } from '../assets/mediaBase64';
 
 const POPULAR_ROUTES = [
   { from: 'Chennai', to: 'Madurai' },
@@ -89,6 +90,14 @@ export default function TravelPage() {
         <>
           {step === 'search' && (
             <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {/* Professional Travel Banner Picture */}
+              <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
+                <img src={TRAVEL_BANNER_BASE64} alt="Intercity Bus Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Intercity Volvo Bus & Travel</div>
+                  <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>AC Sleeper & Seater · Verified Operators</div>
+                </div>
+              </div>
               <div>
                 <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Search Intercity Buses</h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC & Sleeper buses across Tamil Nadu</p>

@@ -5,6 +5,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Package, MapPin, User, Phone, ArrowLeft, ShieldCheck, Check, Truck, ChevronRight, FileText } from 'lucide-react';
 import { MOCK_DRIVERS, SAVED_ADDRESSES, CHENNAI_LOCATIONS } from '../data/mockData';
+import { PARCEL_BANNER_BASE64 } from '../assets/mediaBase64';
 
 // Fix Leaflet marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -75,6 +76,15 @@ export default function ParcelPage() {
       {/* ── STEP 1: PARCEL DETAILS FORM ── */}
       {step === 'form' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {/* Professional Parcel Banner Picture */}
+          <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
+            <img src={PARCEL_BANNER_BASE64} alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Express Parcel Delivery</div>
+              <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>Doorstep Pickup & Sealed Package Delivery</div>
+            </div>
+          </div>
+
           <div>
             <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Pickup & Delivery Details</h2>
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Enter location & recipient information</p>

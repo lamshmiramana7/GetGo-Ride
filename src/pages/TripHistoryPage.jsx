@@ -63,7 +63,7 @@ export default function TripHistoryPage() {
 }
 
 function TripCard({ trip, onOpen }) {
-  const images = { bike: '/assets/bike.png', auto: '/assets/auto.png', car: '/assets/car.png', van: '/assets/van.png' };
+  const images = { bike: 'assets/bike.png', auto: 'assets/auto.png', car: 'assets/car.png', van: 'assets/van.png' };
   const icons = { bus: '🚌', flight: '✈️' };
   const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   const typeLabel = { ride: 'Ride', parcel: 'Parcel', travel: 'Travel' }[trip.type];

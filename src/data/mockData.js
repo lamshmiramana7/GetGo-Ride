@@ -24,10 +24,10 @@ function nearby(lat, lng, radiusKm = 5) {
 }
 
 export const VEHICLE_CATEGORIES = [
-  { id: 'bike', label: 'Bike', icon: '🏍️', image: '/assets/bike.png', capacity: 1, baseRate: 8, description: '1 passenger · Fast & quick' },
-  { id: 'auto', label: 'Auto', icon: '🛺', image: '/assets/auto.png', capacity: 3, baseRate: 12, description: '3 passengers · Eco friendly' },
-  { id: 'car',  label: 'Car',  icon: '🚗', image: '/assets/car.png',  capacity: 4, baseRate: 18, description: '4 passengers · AC comfort' },
-  { id: 'van',  label: 'Van',  icon: '🚐', image: '/assets/van.png',  capacity: 5, baseRate: 24, description: '5 passengers · Extra space' },
+  { id: 'bike', label: 'Bike', icon: '🏍️', image: 'assets/bike.png', capacity: 1, baseRate: 8, description: '1 passenger · Fast & quick' },
+  { id: 'auto', label: 'Auto', icon: '🛺', image: 'assets/auto.png', capacity: 3, baseRate: 12, description: '3 passengers · Eco friendly' },
+  { id: 'car',  label: 'Car',  icon: '🚗', image: 'assets/car.png',  capacity: 4, baseRate: 18, description: '4 passengers · AC comfort' },
+  { id: 'van',  label: 'Van',  icon: '🚐', image: 'assets/van.png',  capacity: 5, baseRate: 24, description: '5 passengers · Extra space' },
 ];
 
 // Rate band: base ±15%/+25% per GetGo Partner policy
@@ -39,19 +39,19 @@ function rateInBand(base) {
 
 export const MOCK_DRIVERS = [
   // BIKES (6)
-  { id: 'd001', vehicle: 'bike', vehicleNo: 'TN09 BK 4521', vehicleModel: 'Honda Activa', color: 'Black', rating: 4.9, trips: 1240, rate: rateInBand(8), pos: nearby(13.0827, 80.2707), name: 'Murugan Selvam', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd002', vehicle: 'bike', vehicleNo: 'TN09 BK 7732', vehicleModel: 'TVS Jupiter', color: 'Blue', rating: 4.7, trips: 890, rate: rateInBand(8), pos: nearby(13.0827, 80.2707), name: 'Karthik Rajan', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd003', vehicle: 'bike', vehicleNo: 'TN04 BK 2290', vehicleModel: 'Bajaj Pulsar', color: 'Red', rating: 4.5, trips: 560, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 3), name: 'Senthil Kumar', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd004', vehicle: 'bike', vehicleNo: 'TN22 BK 8810', vehicleModel: 'Honda Shine', color: 'Silver', rating: 4.2, trips: 320, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 4), name: 'Anbu Arasan', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd005', vehicle: 'bike', vehicleNo: 'TN07 BK 9941', vehicleModel: 'Hero Splendor', color: 'Black', rating: 4.8, trips: 1510, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 2), name: 'Vijay Anand', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd006', vehicle: 'bike', vehicleNo: 'TN10 BK 3314', vehicleModel: 'Yamaha FZ', color: 'White', rating: 4.6, trips: 780, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 3), name: 'Pravin Kumar', photo: '/assets/driver_avatar.png', verified: true },
+  { id: 'd001', vehicle: 'bike', vehicleNo: 'TN09 BK 4521', vehicleModel: 'Honda Activa', color: 'Black', rating: 4.9, trips: 1240, rate: rateInBand(8), pos: nearby(13.0827, 80.2707), name: 'Murugan Selvam', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd002', vehicle: 'bike', vehicleNo: 'TN09 BK 7732', vehicleModel: 'TVS Jupiter', color: 'Blue', rating: 4.7, trips: 890, rate: rateInBand(8), pos: nearby(13.0827, 80.2707), name: 'Karthik Rajan', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd003', vehicle: 'bike', vehicleNo: 'TN04 BK 2290', vehicleModel: 'Bajaj Pulsar', color: 'Red', rating: 4.5, trips: 560, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 3), name: 'Senthil Kumar', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd004', vehicle: 'bike', vehicleNo: 'TN22 BK 8810', vehicleModel: 'Honda Shine', color: 'Silver', rating: 4.2, trips: 320, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 4), name: 'Anbu Arasan', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd005', vehicle: 'bike', vehicleNo: 'TN07 BK 9941', vehicleModel: 'Hero Splendor', color: 'Black', rating: 4.8, trips: 1510, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 2), name: 'Vijay Anand', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd006', vehicle: 'bike', vehicleNo: 'TN10 BK 3314', vehicleModel: 'Yamaha FZ', color: 'White', rating: 4.6, trips: 780, rate: rateInBand(8), pos: nearby(13.0827, 80.2707, 3), name: 'Pravin Kumar', photo: 'assets/driver_avatar.png', verified: true },
 
   // AUTOS (5)
-  { id: 'd007', vehicle: 'auto', vehicleNo: 'TN01 AU 1234', vehicleModel: 'Bajaj RE Auto', color: 'Yellow', rating: 4.9, trips: 2100, rate: rateInBand(12), pos: nearby(13.0827, 80.2707), name: 'Ramasamy V.', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd008', vehicle: 'auto', vehicleNo: 'TN05 AU 5678', vehicleModel: 'Piaggio Ape', color: 'Green', rating: 4.6, trips: 1450, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 2), name: 'Dhanush M.', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd009', vehicle: 'auto', vehicleNo: 'TN09 AU 9101', vehicleModel: 'Bajaj Maxima', color: 'Yellow', rating: 4.4, trips: 920, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 3), name: 'Velu Swamy', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd010', vehicle: 'auto', vehicleNo: 'TN02 AU 3456', vehicleModel: 'Mahindra Alfa', color: 'Black/Yellow', rating: 4.1, trips: 410, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 5), name: 'Srinivasan K.', photo: '/assets/driver_avatar.png', verified: true },
-  { id: 'd011', vehicle: 'auto', vehicleNo: 'TN07 AU 7890', vehicleModel: 'Bajaj Compact', color: 'Yellow', rating: 5.0, trips: 3100, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 1), name: 'Mani Kandan', photo: '/assets/driver_avatar.png', verified: true },
+  { id: 'd007', vehicle: 'auto', vehicleNo: 'TN01 AU 1234', vehicleModel: 'Bajaj RE Auto', color: 'Yellow', rating: 4.9, trips: 2100, rate: rateInBand(12), pos: nearby(13.0827, 80.2707), name: 'Ramasamy V.', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd008', vehicle: 'auto', vehicleNo: 'TN05 AU 5678', vehicleModel: 'Piaggio Ape', color: 'Green', rating: 4.6, trips: 1450, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 2), name: 'Dhanush M.', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd009', vehicle: 'auto', vehicleNo: 'TN09 AU 9101', vehicleModel: 'Bajaj Maxima', color: 'Yellow', rating: 4.4, trips: 920, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 3), name: 'Velu Swamy', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd010', vehicle: 'auto', vehicleNo: 'TN02 AU 3456', vehicleModel: 'Mahindra Alfa', color: 'Black/Yellow', rating: 4.1, trips: 410, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 5), name: 'Srinivasan K.', photo: 'assets/driver_avatar.png', verified: true },
+  { id: 'd011', vehicle: 'auto', vehicleNo: 'TN07 AU 7890', vehicleModel: 'Bajaj Compact', color: 'Yellow', rating: 5.0, trips: 3100, rate: rateInBand(12), pos: nearby(13.0827, 80.2707, 1), name: 'Mani Kandan', photo: 'assets/driver_avatar.png', verified: true },
 
   // CARS (5)
   { id: 'd013', vehicle: 'car', vehicleNo: 'TN04 CR 8832', vehicleModel: 'Hyundai i20', color: 'Grey', rating: 4.7, trips: 2140, rate: rateInBand(18), pos: nearby(13.0827, 80.2707, 3), name: 'Sureshkumar A', photo: null, verified: true },

@@ -332,7 +332,7 @@ export default function RideBookingPage() {
           {/* Anonymous driver preview */}
           <div style={{ background: 'var(--bg-card)', borderRadius: 'var(--radius-xl)', border: '1.5px solid var(--border)', padding: 20, textAlign: 'center' }}>
             <div style={{ width: 70, height: 48, margin: '0 auto 10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <img src={VEHICLE_CATEGORIES.find(c => c.id === (selectedVehicle || 'car'))?.image || '/assets/car.png'} alt="Vehicle" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }} />
+              <img src={VEHICLE_CATEGORIES.find(c => c.id === (selectedVehicle || 'car'))?.image || 'assets/car.png'} alt="Vehicle" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))' }} />
             </div>
             <div style={{ fontFamily: 'Poppins', fontSize: '1.0625rem', fontWeight: 700 }}>Driver assigned</div>
             <div style={{ fontSize: '0.8125rem', color: 'var(--text-muted)', marginTop: 4 }}>Identity revealed after confirmation</div>

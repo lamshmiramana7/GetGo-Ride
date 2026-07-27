@@ -38,7 +38,7 @@ export default function HomePage() {
           <button id="menu-btn" onClick={openMenu} style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: '#fff', width: 38, height: 38, borderRadius: 10, fontSize: '1.125rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             ☰
           </button>
-          <img src="/logo.png" alt="GetGo Ride" className="home-logo" />
+          <img src="logo.png" alt="GetGo Ride" className="home-logo" />
           <div style={{ display: 'flex', gap: 8 }}>
             <button
               id="theme-toggle-home-btn"
@@ -75,21 +75,21 @@ export default function HomePage() {
       <div className="service-cards animate-slideUp">
         <div id="book-ride-card" className="service-card" onClick={() => navigate('/ride')}>
           <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(0,166,81,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1px solid rgba(0,166,81,0.25)', overflow: 'hidden' }}>
-            <img src="/assets/bike.png" alt="Ride" style={{ width: 42, height: 42, objectFit: 'contain' }} />
+            <img src="assets/bike.png" alt="Ride" style={{ width: 42, height: 42, objectFit: 'contain' }} />
           </div>
           <div className="service-card-label">{t('bookRide')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bike · Auto · Car · Van</div>
         </div>
         <div id="send-parcel-card" className="service-card" onClick={() => navigate('/parcel')}>
           <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(37,99,235,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1px solid rgba(37,99,235,0.25)', overflow: 'hidden' }}>
-            <img src="/assets/parcel.png" alt="Parcel" style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 12 }} />
+            <img src="assets/parcel.png" alt="Parcel" style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 12 }} />
           </div>
           <div className="service-card-label">{t('sendParcel')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bike delivery</div>
         </div>
         <div id="travel-card" className="service-card" onClick={() => navigate('/travel')}>
           <div style={{ width: 52, height: 52, borderRadius: 16, background: 'rgba(124,58,237,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 8, border: '1px solid rgba(124,58,237,0.25)', overflow: 'hidden' }}>
-            <img src="/assets/bus.png" alt="Travel" style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 12 }} />
+            <img src="assets/bus.png" alt="Travel" style={{ width: 42, height: 42, objectFit: 'cover', borderRadius: 12 }} />
           </div>
           <div className="service-card-label">{t('travel')}</div>
           <div style={{ fontSize: '0.625rem', color: 'var(--text-muted)' }}>Bus · Flights · Train</div>

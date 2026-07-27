@@ -71,7 +71,7 @@ export default function LoginPage() {
     <div className="login-screen">
       {/* Hero */}
       <div className="login-hero">
-        <img src="/logo.png" alt="GetGo Ride" className="login-logo" />
+        <img src="logo.png" alt="GetGo Ride" className="login-logo" />
         <p className="login-tagline">The ultimate transport network for India</p>
       </div>
 

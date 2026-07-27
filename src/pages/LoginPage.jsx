@@ -86,33 +86,29 @@ export default function LoginPage() {
         boxShadow: 'var(--shadow-flat)',
         overflow: 'hidden',
       }}>
-        {/* Full Seamless Green Banner Header featuring exact uploaded GetGo RIDE logo picture */}
+        {/* Exact Full-Bleed Uploaded GetGo Logo Picture as Login Hero */}
         <div style={{
+          width: '100%',
           backgroundColor: '#044C23',
-          padding: '28px 20px',
+          overflow: 'hidden',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           justifyContent: 'center',
-          textAlign: 'center',
+          alignItems: 'center'
         }}>
           <img
             src={LOGIN_HERO_BASE64}
             alt="GetGo Ride Official Brand Logo"
             style={{
               width: '100%',
-              maxWidth: 320,
               height: 'auto',
               display: 'block',
-              borderRadius: 12,
-              boxShadow: '0 8px 30px rgba(0,0,0,0.35)',
               objectFit: 'contain'
             }}
           />
         </div>
 
         {/* Language selector inside login */}
-        <div style={{ padding: '14px 24px 0', display: 'flex', justifyContent: 'flex-end' }}>
+        <div style={{ padding: '16px 24px 0', display: 'flex', justifyContent: 'flex-end' }}>
           <select
             value={language}
             onChange={e => setLanguage(e.target.value)}

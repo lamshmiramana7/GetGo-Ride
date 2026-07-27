@@ -1,7 +1,12 @@
 import React, { useState } from 'react';
 import { Car, Package, Compass, Calendar, MapPin, Check, Star, X } from 'lucide-react';
 import { MOCK_TRIPS } from '../data/mockData';
+import bikeImg from '../assets/bike.png';
+import autoImg from '../assets/auto.png';
+import carImg from '../assets/car.png';
+import vanImg from '../assets/van.png';
 
+const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
 const FILTERS = ['All', 'Rides', 'Parcels', 'Travel'];
 
 export default function TripHistoryPage() {
@@ -80,18 +85,36 @@ export default function TripHistoryPage() {
                 onClick={() => setSelected(trip)}
                 style={{ display: 'flex', alignItems: 'center', gap: 16 }}
               >
+                {/* Vehicle Photo Container with GetGo Sticker Overlay */}
                 <div style={{
-                  width: 44,
+                  width: 60,
                   height: 44,
                   borderRadius: 'var(--radius-md)',
-                  backgroundColor: 'var(--brand-green-tint)',
-                  color: 'var(--brand-green-text)',
+                  backgroundColor: '#FFFFFF',
+                  border: '1px solid var(--border)',
+                  padding: 3,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
-                  <Icon size={22} />
+                  <img src={VEHICLE_IMAGES[trip.vehicle] || carImg} alt={trip.vehicle || trip.type} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 1,
+                    right: 1,
+                    backgroundColor: '#1B5E20',
+                    color: '#FFFFFF',
+                    fontSize: 7,
+                    fontWeight: 800,
+                    padding: '1px 3px',
+                    borderRadius: 3,
+                    letterSpacing: '0.05em'
+                  }}>
+                    GetGo
+                  </div>
                 </div>
 
                 <div style={{ flex: 1, minWidth: 0 }}>
@@ -104,7 +127,7 @@ export default function TripHistoryPage() {
                     </div>
                   </div>
                   <div className="text-caption" style={{ color: 'var(--text-muted)', marginTop: 4 }}>
-                    {date} · {trip.distance} km · {trip.paymentMethod}
+                    GetGo {trip.vehicle ? trip.vehicle.toUpperCase() : 'RIDE'} · {date} · {trip.distance} km
                   </div>
                 </div>
               </div>

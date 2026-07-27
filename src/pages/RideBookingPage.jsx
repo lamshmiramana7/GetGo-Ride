@@ -5,7 +5,13 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Zap, Car, Truck, MapPin, ArrowLeft, ShieldCheck, Check, Clock, CreditCard, ChevronRight, User, Phone, Star, AlertCircle } from 'lucide-react';
 import { MOCK_DRIVERS, VEHICLE_CATEGORIES, SAVED_ADDRESSES, PAYMENT_METHODS, CHENNAI_LOCATIONS } from '../data/mockData';
+import bikeImg from '../assets/bike.png';
+import autoImg from '../assets/auto.png';
+import carImg from '../assets/car.png';
+import vanImg from '../assets/van.png';
 import GetGoLogo from '../components/GetGoLogo';
+
+const VEHICLE_IMAGES = { bike: bikeImg, auto: autoImg, car: carImg, van: vanImg };
 
 // Fix Leaflet default marker icons
 delete L.Icon.Default.prototype._getIconUrl;
@@ -234,35 +240,56 @@ export default function RideBookingPage() {
 
           <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Select Ride Option</h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12 }}>
             {[
-              { id: 'bike', label: 'GetGo Bike', desc: 'Fast single passenger', icon: Zap, rate: '₹10/km' },
-              { id: 'auto', label: 'GetGo Auto', desc: '3 seats · Eco friendly', icon: Car, rate: '₹14/km' },
-              { id: 'car', label: 'GetGo Comfort Car', desc: '4 seats · A/C sedan', icon: Car, rate: '₹18/km' },
-              { id: 'van', label: 'GetGo XL Van', desc: '6 seats · Extra luggage', icon: Truck, rate: '₹24/km' },
+              { id: 'bike', label: 'GetGo Bike', desc: 'Fast single passenger', rate: '₹10/km' },
+              { id: 'auto', label: 'GetGo Auto', desc: '3 seats · Eco friendly', rate: '₹14/km' },
+              { id: 'car', label: 'GetGo Sedan Car', desc: '4 seats · A/C sedan', rate: '₹18/km' },
+              { id: 'van', label: 'GetGo XL Van', desc: '6 seats · Extra luggage', rate: '₹24/km' },
             ].map(v => {
-              const Icon = v.icon;
               const isSel = selectedVehicle === v.id;
               return (
                 <div
                   key={v.id}
                   className={isSel ? 'flat-card-selected' : 'flat-card-interactive'}
                   onClick={() => setSelectedVehicle(v.id)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 16 }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 14 }}
                 >
+                  {/* Real Vehicle Photo with GetGo Sticker Overlay */}
                   <div style={{
-                    width: 44, height: 44, borderRadius: 'var(--radius-md)',
-                    backgroundColor: isSel ? 'var(--brand-green)' : 'var(--bg-secondary)',
-                    color: isSel ? '#FFFFFF' : 'var(--brand-green-text)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0
+                    width: 70, height: 50, borderRadius: 'var(--radius-md)',
+                    backgroundColor: '#FFFFFF',
+                    border: '1px solid var(--border)',
+                    padding: 4,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+                    position: 'relative',
+                    overflow: 'hidden'
                   }}>
-                    <Icon size={22} />
+                    <img src={VEHICLE_IMAGES[v.id]} alt={v.label} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 2,
+                      right: 2,
+                      backgroundColor: '#1B5E20',
+                      color: '#FFFFFF',
+                      fontSize: 8,
+                      fontWeight: 800,
+                      padding: '1px 4px',
+                      borderRadius: 4,
+                      letterSpacing: '0.05em'
+                    }}>
+                      GetGo
+                    </div>
                   </div>
-                  <div style={{ flex: 1 }}>
-                    <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{v.label}</div>
-                    <div className="text-caption" style={{ color: 'var(--text-secondary)' }}>{v.desc}</div>
+
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="text-body-medium" style={{ color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: 6 }}>
+                      {v.label}
+                    </div>
+                    <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>{v.desc}</div>
                   </div>
-                  <div style={{ fontWeight: 700, color: 'var(--brand-green-text)', fontSize: 15 }}>{v.rate}</div>
+
+                  <div style={{ fontWeight: 700, color: 'var(--brand-green-text)', fontSize: 15, flexShrink: 0 }}>{v.rate}</div>
                 </div>
               );
             })}

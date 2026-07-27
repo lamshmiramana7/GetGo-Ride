@@ -5,68 +5,73 @@ import { useAuth } from '../App';
 function AppIconLogo() {
   return (
     <div style={{
-      width: 130,
-      height: 130,
-      borderRadius: 28,
-      background: 'linear-gradient(145deg, #1a2e1a, #0d1f0d)',
-      boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 2px 8px rgba(0,166,81,0.3)',
+      width: 140,
+      height: 140,
+      borderRadius: 32,
+      background: 'linear-gradient(180deg, #053315 0%, #021c0b 100%)',
+      boxShadow: '0 10px 36px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.15)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
-      border: '1.5px solid rgba(0,166,81,0.3)',
-      padding: '10px 14px',
-      gap: 2,
+      border: '1.5px solid rgba(0,210,100,0.3)',
+      padding: '12px 14px',
+      boxSizing: 'border-box',
     }}>
-      {/* GetGo + Bike row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+      {/* GetGo + Bike Rider row */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center' }}>
         <span style={{
-          fontFamily: 'Poppins, Arial, sans-serif',
+          fontFamily: 'Poppins, sans-serif',
           fontWeight: 900,
           fontSize: '1.75rem',
-          color: '#fff',
+          color: '#ffffff',
           lineHeight: 1,
           letterSpacing: '-0.5px',
         }}>GetGo</span>
-        {/* Bike SVG icon */}
-        <svg width="32" height="28" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
-          {/* Rear wheel */}
-          <circle cx="13" cy="33" r="10" stroke="white" strokeWidth="3" fill="none"/>
-          <circle cx="13" cy="33" r="3" fill="white"/>
-          {/* Front wheel */}
-          <circle cx="47" cy="33" r="10" stroke="white" strokeWidth="3" fill="none"/>
-          <circle cx="47" cy="33" r="3" fill="white"/>
-          {/* Frame */}
-          <path d="M13 33 L26 14 L38 14 L47 33" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          <path d="M26 14 L13 33" stroke="white" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-          {/* Seat/body */}
-          <path d="M28 14 L38 14 L42 20 L32 20 Z" fill="white"/>
-          {/* Handlebar */}
-          <path d="M42 12 L46 12 L46 18" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-          {/* Rider hint */}
-          <circle cx="30" cy="9" r="5" fill="white"/>
+
+        {/* Motorcycle Rider Vector */}
+        <svg width="40" height="30" viewBox="0 0 50 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Speed lines behind */}
+          <line x1="2" y1="12" x2="12" y2="12" stroke="#00A651" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="0" y1="20" x2="10" y2="20" stroke="#00A651" strokeWidth="2" strokeLinecap="round"/>
+          {/* Wheels */}
+          <circle cx="16" cy="27" r="7" stroke="white" strokeWidth="2.5"/>
+          <circle cx="40" cy="27" r="7" stroke="white" strokeWidth="2.5"/>
+          {/* Chassis & Body */}
+          <path d="M16 27 L26 17 L36 17 L40 27" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <path d="M26 17 L22 10 L32 7 L36 17" fill="white"/>
+          {/* Rider */}
+          <circle cx="28" cy="6" r="3.5" fill="white"/>
+          <path d="M25 9 Q32 11 36 15" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
         </svg>
       </div>
-      {/* RIDE text */}
+
+      {/* -- RIDE -- line section */}
+      <div style={{ display: 'flex', alignItems: 'center', width: '100%', gap: 6, margin: '4px 0 2px' }}>
+        <div style={{ height: 1.5, flex: 1, background: '#00A651' }} />
+        <span style={{
+          fontFamily: 'Poppins, sans-serif',
+          fontWeight: 900,
+          fontSize: '1.125rem',
+          color: '#00A651',
+          letterSpacing: '3px',
+          lineHeight: 1,
+        }}>RIDE</span>
+        <div style={{ height: 1.5, flex: 1, background: '#00A651' }} />
+      </div>
+
+      {/* Sub-tagline inside logo box */}
       <div style={{
-        fontFamily: 'Poppins, Arial, sans-serif',
-        fontWeight: 800,
-        fontSize: '1.1rem',
-        color: '#00A651',
-        letterSpacing: '4px',
-        marginTop: 2,
-        textTransform: 'uppercase',
-      }}>RIDE</div>
-      {/* Tagline */}
-      <div style={{
-        fontFamily: 'Arial, sans-serif',
-        fontSize: '0.48rem',
-        color: 'rgba(255,255,255,0.65)',
-        marginTop: 3,
-        letterSpacing: '0.2px',
+        fontFamily: 'Outfit, sans-serif',
+        fontSize: '0.45rem',
+        color: 'rgba(255,255,255,0.7)',
+        letterSpacing: '0.1px',
         textAlign: 'center',
-        lineHeight: 1.3,
-      }}>The ultimate transport network for India.</div>
+        whiteSpace: 'nowrap',
+        marginTop: 2,
+      }}>
+        The ultimate transport network for India.
+      </div>
     </div>
   );
 }

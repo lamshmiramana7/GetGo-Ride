@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { MapPin, ArrowLeft, Check, CreditCard, X, UserCheck } from 'lucide-react';
-import { MOCK_DRIVERS, PAYMENT_METHODS, VEHICLE_CATEGORIES } from '../data/mockData';
+import { MOCK_DRIVERS, PAYMENT_METHODS, VEHICLE_CATEGORIES, CHENNAI_LOCATIONS } from '../data/mockData';
 import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
 import { DRIVER_AVATAR_BASE64 } from '../assets/mediaBase64';
 import { useLanguage, useLocation } from '../App';
@@ -39,15 +39,40 @@ const CAR_ICON   = makeCarIcon('🚗', '#1B5E20', 42);
 const SELECTED_CAR_ICON = makeCarIcon('🚗', '#1B5E20', 46);
 const GREY_CAR   = makeCarIcon('🚗', '#374151', 34);
 
+function MapController({ center, zoom = 13 }) {
+  const map = useMap();
+  useEffect(() => {
+    if (center && Array.isArray(center) && typeof center[0] === 'number' && typeof center[1] === 'number') {
+      try {
+        map.invalidateSize();
+        map.setView(center, zoom);
+      } catch (e) {
+        console.warn('MapController error:', e);
+      }
+    }
+  }, [center?.[0], center?.[1], zoom, map]);
+  return null;
+}
+
 // ─── MapFit: auto-fit bounds when markers change ──────────────────────
 function MapFit({ positions }) {
   const map = useMap();
   useEffect(() => {
-    if (positions && positions.length >= 2) {
-      const bounds = L.latLngBounds(positions);
-      map.fitBounds(bounds, { padding: [40, 40], maxZoom: 15 });
-    }
-  }, [JSON.stringify(positions)]);
+    const timer = setTimeout(() => {
+      try {
+        map.invalidateSize();
+        if (Array.isArray(positions) && positions.length >= 2) {
+          const valid = positions.filter(p => Array.isArray(p) && typeof p[0] === 'number' && !isNaN(p[0]) && typeof p[1] === 'number' && !isNaN(p[1]));
+          if (valid.length >= 2) {
+            map.fitBounds(L.latLngBounds(valid), { padding: [35, 35], maxZoom: 15 });
+          }
+        }
+      } catch (e) {
+        console.warn('MapFit error:', e);
+      }
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [JSON.stringify(positions), map]);
   return null;
 }
 
@@ -150,6 +175,38 @@ export default function RideBookingPage() {
   const [showReceipt, setShowReceipt]       = useState(false);
   const [trackPhase, setTrackPhase]         = useState('arriving'); // 'arriving' | 'inride' | 'done'
 
+  const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [activeField, setActiveField] = useState(null);
+
+  const handleSearch = (query, field) => {
+    if (!query) { setSearchSuggestions([]); return; }
+    const results = CHENNAI_LOCATIONS.filter(l => l.name.toLowerCase().includes(query.toLowerCase())).slice(0, 5);
+    setSearchSuggestions(results);
+    setActiveField(field);
+  };
+
+  const selectLoc = (loc, field) => {
+    if (field === 'pickup') {
+      setPickup(loc.name);
+      setPickupCoords({ lat: loc.lat, lng: loc.lng });
+    } else {
+      setDropoff(loc.name);
+      setDropCoords({ lat: loc.lat, lng: loc.lng });
+    }
+    setSearchSuggestions([]);
+    setActiveField(null);
+  };
+
+  const selectQuickDrop = (name) => {
+    const match = CHENNAI_LOCATIONS.find(l => l.name.toLowerCase().includes(name.toLowerCase()));
+    if (match) {
+      setDropoff(match.name);
+      setDropCoords({ lat: match.lat, lng: match.lng });
+    } else {
+      setDropoff(name + ', Chennai');
+    }
+  };
+
   const availableDrivers = useMemo(() =>
     MOCK_DRIVERS.filter(d => d.vehicle === selectedCategory), [selectedCategory]);
 
@@ -220,6 +277,7 @@ export default function RideBookingPage() {
             </div>
             <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={13} style={{ height: 260, width: '100%' }} scrollWheelZoom={false}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              <MapController center={[pickupCoords.lat, pickupCoords.lng]} />
               <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={PICKUP_PIN} />
               <Marker position={[dropCoords.lat, dropCoords.lng]} icon={DROP_PIN} />
               <Polyline positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]} pathOptions={{ color: '#1B5E20', weight: 3, opacity: 0.7, dashArray: '8 5' }} />
@@ -234,18 +292,45 @@ export default function RideBookingPage() {
           <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>1. Pickup & Destination</h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {/* Pickup input with autocomplete suggestions */}
               <div style={{ position: 'relative' }}>
                 <MapPin size={18} color="#2563EB" style={{ position: 'absolute', left: 14, top: 13 }} />
-                <input className="input-field" placeholder="Pickup address" value={pickup} onChange={e => setPickup(e.target.value)} style={{ paddingLeft: 42 }} />
+                <input className="input-field" placeholder="Pickup address" value={pickup}
+                  onChange={e => { setPickup(e.target.value); handleSearch(e.target.value, 'pickup'); }}
+                  onFocus={() => setActiveField('pickup')}
+                  style={{ paddingLeft: 42 }} />
+                {activeField === 'pickup' && searchSuggestions.length > 0 && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', zIndex: 200, marginTop: 4, boxShadow: 'var(--shadow-flat)' }}>
+                    {searchSuggestions.map((s, i) => (
+                      <div key={i} onClick={() => selectLoc(s, 'pickup')} style={{ padding: '11px 16px', fontSize: 13, cursor: 'pointer', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <MapPin size={13} color="var(--brand-green-text)" /> {s.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
+
+              {/* Destination input with autocomplete suggestions */}
               <div style={{ position: 'relative' }}>
                 <MapPin size={18} color="#DC2626" style={{ position: 'absolute', left: 14, top: 13 }} />
-                <input className="input-field" placeholder="Destination address" value={dropoff} onChange={e => setDropoff(e.target.value)} style={{ paddingLeft: 42 }} />
+                <input className="input-field" placeholder="Destination address" value={dropoff}
+                  onChange={e => { setDropoff(e.target.value); handleSearch(e.target.value, 'dropoff'); }}
+                  onFocus={() => setActiveField('dropoff')}
+                  style={{ paddingLeft: 42 }} />
+                {activeField === 'dropoff' && searchSuggestions.length > 0 && (
+                  <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, backgroundColor: 'var(--bg-surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', zIndex: 200, marginTop: 4, boxShadow: 'var(--shadow-flat)' }}>
+                    {searchSuggestions.map((s, i) => (
+                      <div key={i} onClick={() => selectLoc(s, 'dropoff')} style={{ padding: '11px 16px', fontSize: 13, cursor: 'pointer', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 8 }}>
+                        <MapPin size={13} color="#DC2626" /> {s.name}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
               {['T. Nagar', 'Chennai Airport', 'Central Station', 'OMR Tech Park', 'Tambaram'].map(loc => (
-                <button key={loc} onClick={() => setDropoff(loc + ', Chennai')} className={dropoff.includes(loc) ? 'badge-flat-green' : 'badge-flat'} style={{ cursor: 'pointer', fontSize: 12 }}>{loc}</button>
+                <button key={loc} onClick={() => selectQuickDrop(loc)} className={dropoff.includes(loc) ? 'badge-flat-green' : 'badge-flat'} style={{ cursor: 'pointer', fontSize: 12 }}>{loc}</button>
               ))}
             </div>
             <button className="btn-primary" onClick={() => setStep('vehicle')} disabled={!pickup.trim() || !dropoff.trim()}>Choose Vehicle →</button>
@@ -302,6 +387,7 @@ export default function RideBookingPage() {
             </div>
             <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={14} style={{ height: 230, width: '100%' }} scrollWheelZoom={false}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              <MapController center={[pickupCoords.lat, pickupCoords.lng]} zoom={14} />
               <NearbyDriversMap pickupCoords={pickupCoords} drivers={availableDrivers} selectedDriverId={selectedDriver?.id} />
             </MapContainer>
             <div style={{ padding: '5px 14px', backgroundColor: 'var(--bg-secondary)', fontSize: 11, color: 'var(--text-muted)' }}>
@@ -409,6 +495,7 @@ export default function RideBookingPage() {
             </div>
             <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={14} style={{ height: 320, width: '100%' }} scrollWheelZoom={false}>
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              <MapController center={[pickupCoords.lat, pickupCoords.lng]} zoom={14} />
               {trackPhase !== 'done' ? (
                 <LiveTrackingMap
                   pickupCoords={pickupCoords}

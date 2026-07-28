@@ -13,10 +13,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
     <title>GetGo Ride — Book Rides, Parcels & Travel</title>
-    <script type="module" crossorigin src="./assets/index-9KUYVlDg.js"></script>
+    <script type="module" crossorigin src="./assets/index-B3WhQTFG.js"></script>
     <link rel="stylesheet" crossorigin href="./assets/index-CoFQ9Q63.css">
   </head>
   <body>
+    <!-- Inline theme enforcement: runs before React to prevent dark flash -->
+    <script>
+      (function() {
+        // Remove old 'gg-theme' key from past sessions
+        localStorage.removeItem('gg-theme');
+        // Default to light unless user explicitly toggled dark
+        var explicit = localStorage.getItem('gg-explicit-dark');
+        if (explicit !== 'true') {
+          localStorage.setItem('gg-explicit-dark', 'false');
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
     <div id="root"></div>
   </body>
 </html>

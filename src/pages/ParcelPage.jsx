@@ -15,14 +15,12 @@ L.Icon.Default.mergeOptions({
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-// ─── Custom Icons ─────────────────────────────────────────────────────
 const makePin = (color) => L.divIcon({
   className: '',
-  html: `<svg viewBox="0 0 36 48" width="36" height="48" xmlns="http://www.w3.org/2000/svg">
-    <path d="M18 0C8.06 0 0 8.06 0 18c0 13 16 29.5 17.4 31a1 1 0 001.2 0C20 47.5 36 31 36 18 36 8.06 27.94 0 18 0z" fill="${color}"/>
-    <circle cx="18" cy="18" r="8" fill="white"/>
-  </svg>`,
-  iconSize: [36, 48], iconAnchor: [18, 48],
+  html: `<div style="background:${color};width:24px;height:24px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.35);position:relative;margin-top:-12px;margin-left:-12px">
+    <div style="background:white;width:8px;height:8px;border-radius:50%;position:absolute;top:5px;left:5px"></div>
+  </div>`,
+  iconSize: [24, 24], iconAnchor: [0, 0],
 });
 
 const PICKUP_PIN = makePin('#2563EB');
@@ -30,8 +28,8 @@ const DROP_PIN   = makePin('#DC2626');
 
 const makeBikeIcon = (bg = '#1B5E20', size = 38) => L.divIcon({
   className: '',
-  html: `<div style="background:${bg};border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:${Math.round(size * 0.5)}px">🛵</div>`,
-  iconSize: [size, size], iconAnchor: [size / 2, size / 2],
+  html: `<div style="background:${bg};border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:${Math.round(size * 0.5)}px;margin-top:-${size/2}px;margin-left:-${size/2}px">🛵</div>`,
+  iconSize: [size, size], iconAnchor: [0, 0],
 });
 const BIKE_ICON = makeBikeIcon('#1B5E20', 42);
 

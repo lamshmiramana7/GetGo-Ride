@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">GetGo Ride</string>
+    <string name="title_activity_main">GetGo Ride</string>
+    <string name="package_name">com.getgo.ride</string>
+    <string name="custom_url_scheme">com.getgo.ride</string>
+</resources>

@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Car, Package, Compass, MapPin, Search, Sun, Moon, ChevronRight, Home as HomeIcon, Briefcase, ShieldCheck } from 'lucide-react';
-import { useAuth, useTheme, useLanguage } from '../App';
+import { Car, Package, Compass, MapPin, Search, ChevronRight, Home as HomeIcon, Briefcase, ShieldCheck } from 'lucide-react';
+import { useAuth, useLanguage, useLocation } from '../App';
 import { MOCK_USER, MOCK_TRIPS, SAVED_ADDRESSES } from '../data/mockData';
-import GetGoLogo from '../components/GetGoLogo';
-import { RIDE_BANNER_BASE64, PARCEL_BANNER_BASE64, TRAVEL_BANNER_BASE64 } from '../assets/mediaBase64';
 
 export default function HomePage() {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { theme, toggleTheme } = useTheme();
   const { t } = useLanguage();
+  const { userLocation } = useLocation();
   const [searchQuery, setSearchQuery] = useState('');
 
   const firstName = (user?.name || MOCK_USER.name).split(' ')[0];
@@ -20,22 +18,25 @@ export default function HomePage() {
     {
       id: 'ride',
       title: t('bookRide') || 'Book a Ride',
-      subtitle: 'Bike · Auto · Car · Van',
-      image: RIDE_BANNER_BASE64,
+      subtitle: 'Bike · Auto · Sedan · XL Van',
+      icon: Car,
+      color: 'var(--brand-green)',
       path: '/ride',
     },
     {
       id: 'parcel',
       title: t('sendParcel') || 'Send Parcel',
       subtitle: 'Doorstep pickup & express delivery',
-      image: PARCEL_BANNER_BASE64,
+      icon: Package,
+      color: '#2563EB',
       path: '/parcel',
     },
     {
       id: 'travel',
       title: t('travel') || 'Intercity Travel',
       subtitle: 'Bus · Flight · Train tickets',
-      image: TRAVEL_BANNER_BASE64,
+      icon: Compass,
+      color: '#7C3AED',
       path: '/travel',
     },
   ];
@@ -51,204 +52,142 @@ export default function HomePage() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 24, paddingBottom: 24 }}>
-      {/* ── TOP BAR (Mobile Header) ── */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <GetGoLogo size={32} showText={true} />
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button
-            onClick={() => navigate('/login')}
-            className="btn-secondary"
-            style={{ padding: '6px 12px', fontSize: 13, gap: 6, borderRadius: 'var(--radius-md)' }}
-            title="Open Login Screen"
-          >
-            <span>Login Page</span>
-          </button>
-          <button
-            onClick={toggleTheme}
-            className="btn-secondary"
-            style={{ width: 40, height: 40, padding: 0, borderRadius: 'var(--radius-md)' }}
-            title="Toggle Theme"
-          >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-          </button>
-        </div>
-      </div>
-
       {/* ── HERO / GREETING & SEARCH ── */}
       <div className="flat-card" style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
-          <h1 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>
-            {t('goodMorning') || 'Welcome back'}, {firstName} 👋
+          <h1 className="text-display" style={{ color: 'var(--text-primary)', fontSize: 24 }}>
+            {t('welcomeGreeting') || 'Good day'}, {firstName}! 👋
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 4 }}>
-            {t('dropoffPlaceholder') || 'Where would you like to go today?'}
+            Where would you like to go today from <strong style={{ color: 'var(--brand-green-text)' }}>{userLocation}</strong>?
           </p>
         </div>
 
-        {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} style={{ display: 'flex', gap: 8 }}>
-          <div style={{ position: 'relative', flex: 1 }}>
-            <MapPin size={18} color="var(--brand-green-text)" style={{ position: 'absolute', left: 14, top: 15 }} />
+          <div style={{ flex: 1, position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <Search size={18} style={{ position: 'absolute', left: 14, color: 'var(--text-muted)' }} />
             <input
-              type="text"
               className="input-field"
-              placeholder={t('dropoffPlaceholder') || 'Search pickup or destination...'}
+              placeholder={t('whereToPlaceholder') || 'Where to? Enter destination…'}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              style={{ paddingLeft: 42 }}
+              style={{ paddingLeft: 42, height: 48, fontSize: 15 }}
             />
           </div>
-          <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '0 20px' }}>
-            <Search size={18} />
+          <button type="submit" className="btn-primary" style={{ padding: '0 20px', height: 48 }}>
+            Search
           </button>
         </form>
-
-        {/* Quick Saved Addresses */}
-        <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingTop: 4 }}>
-          {SAVED_ADDRESSES.map(addr => (
-            <button
-              key={addr.id}
-              onClick={() => navigate(`/ride?destination=${encodeURIComponent(addr.address)}`)}
-              className="badge-flat"
-              style={{ flexShrink: 0, padding: '8px 12px', cursor: 'pointer' }}
-            >
-              {addr.label === 'Home' ? <HomeIcon size={14} /> : addr.label === 'Work' ? <Briefcase size={14} /> : <MapPin size={14} />}
-              <span>{addr.label}</span>
-            </button>
-          ))}
-        </div>
       </div>
 
-      {/* ── SERVICES GRID ── */}
+      {/* ── CLEAN SERVICE CARDS (No Illustrations per Image 2) ── */}
       <div>
-        <h2 className="text-section" style={{ marginBottom: 12, color: 'var(--text-primary)' }}>
-          {t('bookRide') || 'Services'}
+        <h2 className="text-section" style={{ color: 'var(--text-primary)', marginBottom: 12 }}>
+          {t('servicesTitle') || 'GetGo Services'}
         </h2>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16 }}>
-          {SERVICES.map(svc => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 12 }}>
+          {SERVICES.map(srv => {
+            const Icon = srv.icon;
+            return (
+              <div
+                key={srv.id}
+                className="flat-card-interactive"
+                onClick={() => navigate(srv.path)}
+                style={{ padding: 18, display: 'flex', alignItems: 'center', gap: 16, cursor: 'pointer' }}
+              >
+                <div style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 'var(--radius-md)',
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: srv.color,
+                  flexShrink: 0
+                }}>
+                  <Icon size={24} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="text-subtitle" style={{ color: 'var(--text-primary)', fontSize: 16 }}>{srv.title}</div>
+                  <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>{srv.subtitle}</div>
+                </div>
+                <ChevronRight size={18} color="var(--text-muted)" />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── SAVED QUICK ADDRESSES ── */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Saved Locations</h2>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+          {SAVED_ADDRESSES.slice(0, 2).map(addr => (
             <div
-              key={svc.id}
-              id={`service-${svc.id}`}
+              key={addr.id}
               className="flat-card-interactive"
-              onClick={() => navigate(svc.path)}
-              style={{ display: 'flex', alignItems: 'center', gap: 16, padding: 14 }}
+              onClick={() => navigate(`/ride?destination=${encodeURIComponent(addr.address)}`)}
+              style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
             >
-              <div style={{
-                width: 68,
-                height: 52,
-                borderRadius: 'var(--radius-md)',
-                overflow: 'hidden',
-                backgroundColor: 'var(--bg-secondary)',
-                border: '1px solid var(--border)',
-                flexShrink: 0,
-              }}>
-                <img src={svc.image} alt={svc.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-              </div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>
-                  {svc.title}
-                </div>
-                <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>
-                  {svc.subtitle}
+              <div style={{ fontSize: 20 }}>{addr.icon}</div>
+              <div style={{ minWidth: 0 }}>
+                <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{addr.label}</div>
+                <div className="text-caption" style={{ color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {addr.address}
                 </div>
               </div>
-              <ChevronRight size={18} color="var(--text-muted)" />
             </div>
           ))}
         </div>
       </div>
 
-      {/* ── LOWER RESPONSIVE GRID ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 16 }}>
-        {/* Recent Activity */}
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 className="text-section" style={{ color: 'var(--text-primary)' }}>
-              {t('recentTrips') || 'Recent Trips'}
-            </h3>
-            <button className="btn-text" onClick={() => navigate('/history')} style={{ fontSize: 13, padding: 0 }}>
-              {t('viewAll') || 'View All →'}
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {recentTrips.map(trip => {
-              const Icon = trip.type === 'parcel' ? Package : trip.type === 'travel' ? Compass : Car;
-              const date = new Date(trip.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
-
-              return (
-                <div
-                  key={trip.id}
-                  onClick={() => navigate('/history')}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 12,
-                    padding: 12,
-                    backgroundColor: 'var(--bg-secondary)',
-                    borderRadius: 'var(--radius-md)',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.15s ease',
-                  }}
-                >
-                  <div style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 'var(--radius-sm)',
-                    backgroundColor: 'var(--bg-surface)',
-                    border: '1px solid var(--border)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--brand-green-text)',
-                    flexShrink: 0,
-                  }}>
-                    <Icon size={20} />
-                  </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div className="text-body-medium" style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                      {trip.dropoff}
-                    </div>
-                    <div className="text-caption" style={{ color: 'var(--text-muted)', marginTop: 2 }}>
-                      {date} · {trip.distance} km · {trip.paymentMethod}
-                    </div>
-                  </div>
-                  <div style={{ fontWeight: 700, color: 'var(--brand-green-text)', fontSize: 15 }}>
-                    ₹{trip.fare}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+      {/* ── RECENT RECENT TRIPS ── */}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('recentTrips') || 'Recent Activity'}</h2>
+          <button className="btn-text" onClick={() => navigate('/history')}>
+            View All →
+          </button>
         </div>
 
-        {/* Safety Banner */}
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, justifyContent: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{
-              width: 40,
-              height: 40,
-              borderRadius: 'var(--radius-md)',
-              backgroundColor: 'var(--brand-green-tint)',
-              color: 'var(--brand-green-text)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <ShieldCheck size={22} />
-            </div>
-            <div>
-              <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>
-                {t('safetyBanner') || 'GetGo Safety Standard'}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {recentTrips.map(trip => (
+            <div
+              key={trip.id}
+              className="flat-card-interactive"
+              onClick={() => navigate('/history')}
+              style={{ padding: 14, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12 }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+                <div style={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 'var(--radius-sm)',
+                  backgroundColor: 'var(--bg-secondary)',
+                  border: '1px solid var(--border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  {trip.type === 'parcel' ? <Package size={18} color="var(--brand-green-text)" /> : <Car size={18} color="var(--brand-green-text)" />}
+                </div>
+                <div style={{ minWidth: 0 }}>
+                  <div className="text-body-medium" style={{ color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {trip.dropoff}
+                  </div>
+                  <div className="text-caption" style={{ color: 'var(--text-muted)' }}>
+                    GetGo {trip.vehicle ? trip.vehicle.toUpperCase() : 'RIDE'} · {trip.distance} km
+                  </div>
+                </div>
               </div>
-              <div className="text-caption" style={{ color: 'var(--text-secondary)', marginTop: 2 }}>
-                {t('safetySub') || '100% verified drivers, live trip tracking, & 24/7 emergency support.'}
-              </div>
+              <div style={{ fontWeight: 700, color: 'var(--brand-green-text)' }}>₹{trip.fare}</div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

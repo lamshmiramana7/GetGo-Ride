@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, ChevronRight } from 'lucide-react';
-import { BUS_ROUTES } from '../data/mockData';
-import { TRAVEL_BANNER_BASE64, BUS_IMG_BASE64 } from '../assets/mediaBase64';
+import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, Users, ShieldCheck, Ticket } from 'lucide-react';
+import { BUS_ROUTES, PRIVATE_BUS_CHARTERS, INDIAN_GEOGRAPHY } from '../data/mockData';
 import { useLanguage } from '../App';
 
 const POPULAR_ROUTES = [
@@ -17,19 +16,42 @@ const POPULAR_ROUTES = [
 export default function TravelPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const [tab, setTab] = useState('bus'); // 'bus' | 'flights' | 'trains'
+  const [tab, setTab] = useState('bus'); // 'bus' | 'charter' | 'flights' | 'trains'
   const [searchFrom, setSearchFrom] = useState('Chennai');
   const [searchTo, setSearchTo] = useState('Madurai');
   const [travelDate, setTravelDate] = useState(new Date().toISOString().split('T')[0]);
   const [step, setStep] = useState('search'); // 'search' | 'results' | 'confirmed'
   const [selectedTicket, setSelectedTicket] = useState(null);
 
+  // Group Charter State
+  const [groupSize, setGroupSize] = useState(30);
+  const [charterDays, setCharterDays] = useState(2);
+  const [selectedCharterBus, setSelectedCharterBus] = useState(PRIVATE_BUS_CHARTERS[1]);
+
+  // Flight Search State
+  const [flightFrom, setFlightFrom] = useState('Chennai (MAA)');
+  const [flightTo, setFlightTo] = useState('Delhi (DEL)');
+
+  // Train Search State
+  const [trainFrom, setTrainFrom] = useState('Chennai Central (MAS)');
+  const [trainTo, setTrainTo] = useState('Bangalore City (SBC)');
+
   const handleSearch = () => {
     setStep('results');
   };
 
+  const handleIndiGoRedirect = () => {
+    const url = `https://www.goindigo.in/?origin=${encodeURIComponent(flightFrom.slice(0, 3))}&destination=${encodeURIComponent(flightTo.slice(0, 3))}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleConfirmTktRedirect = () => {
+    const url = `https://www.confirmtkt.com/r列車-search/${encodeURIComponent(trainFrom.split(' ')[0])}-to-${encodeURIComponent(trainTo.split(' ')[0])}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingBottom: 24 }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <button
@@ -44,20 +66,21 @@ export default function TravelPage() {
         </button>
         <div>
           <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-            {t('travel') || 'Intercity Travel'}
+            {t('travel') || 'Intercity Travel & Group Bus Charter'}
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-            Bus, Flight & Train ticket booking across India
+            Scheduled Buses, 50-Passenger Group Charters, IndiGo Flights & ConfirmTkt Trains
           </p>
         </div>
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 8, backgroundColor: 'var(--bg-surface)', padding: 4, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+      <div style={{ display: 'flex', gap: 6, backgroundColor: 'var(--bg-surface)', padding: 4, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', flexWrap: 'wrap' }}>
         {[
-          { id: 'bus', label: 'Bus Tickets', icon: Bus },
-          { id: 'flights', label: 'Flights', icon: Plane },
-          { id: 'trains', label: 'Trains', icon: Compass },
+          { id: 'bus', label: 'Intercity Bus', icon: Bus },
+          { id: 'charter', label: 'Group Bus Charter (50 Pax)', icon: Users },
+          { id: 'flights', label: 'IndiGo Flights', icon: Plane },
+          { id: 'trains', label: 'ConfirmTkt Trains', icon: Compass },
         ].map(tObj => {
           const Icon = tObj.icon;
           const isAct = tab === tObj.id;
@@ -67,11 +90,12 @@ export default function TravelPage() {
               onClick={() => { setTab(tObj.id); setStep('search'); }}
               style={{
                 flex: 1,
+                minWidth: 140,
                 height: 40,
                 borderRadius: 'var(--radius-sm)',
                 backgroundColor: isAct ? 'var(--brand-green)' : 'transparent',
                 color: isAct ? '#FFFFFF' : 'var(--text-secondary)',
-                fontSize: 14,
+                fontSize: 13,
                 fontWeight: 600,
                 display: 'flex',
                 alignItems: 'center',
@@ -87,34 +111,26 @@ export default function TravelPage() {
         })}
       </div>
 
-      {/* ── BUS TAB CONTENT ── */}
+      {/* ── 1. INTERCITY BUS TAB ── */}
       {tab === 'bus' && (
         <>
           {step === 'search' && (
             <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {/* Professional Travel Banner Picture */}
-              <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
-                <img src={TRAVEL_BANNER_BASE64} alt="Intercity Bus Travel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.85) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 16px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>{t('travel') || 'Intercity Volvo Bus & Travel'}</div>
-                  <div style={{ fontSize: 12, color: 'var(--brand-green-text)', marginTop: 2 }}>AC Sleeper & Seater · Verified Operators</div>
-                </div>
-              </div>
               <div>
-                <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Search Intercity Buses</h2>
-                <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC & Sleeper buses across Tamil Nadu & India</p>
+                <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Search Intercity Volvo & AC Buses</h2>
+                <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC Sleeper & Seater buses across Tamil Nadu & India</p>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 <input
                   className="input-field"
-                  placeholder={t('pickupPlaceholder') || 'From (Origin city)'}
+                  placeholder="From (Origin city)"
                   value={searchFrom}
                   onChange={e => setSearchFrom(e.target.value)}
                 />
                 <input
                   className="input-field"
-                  placeholder={t('dropoffPlaceholder') || 'To (Destination city)'}
+                  placeholder="To (Destination city)"
                   value={searchTo}
                   onChange={e => setSearchTo(e.target.value)}
                 />
@@ -128,7 +144,7 @@ export default function TravelPage() {
 
               {/* Popular Routes */}
               <div>
-                <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>{t('quickDestinations') || 'Popular Intercity Routes'}</div>
+                <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>Popular Intercity Routes</div>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                   {POPULAR_ROUTES.map((r, i) => (
                     <button
@@ -144,7 +160,7 @@ export default function TravelPage() {
               </div>
 
               <button className="btn-primary" onClick={handleSearch}>
-                {t('continueBtn') || 'Search Buses'}
+                Search Buses →
               </button>
             </div>
           )}
@@ -156,14 +172,14 @@ export default function TravelPage() {
                 <span style={{ color: 'var(--text-muted)' }}>{travelDate}</span>
               </div>
 
-              <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Available Buses ({BUS_ROUTES.length})</h2>
+              <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Available Scheduled Buses ({BUS_ROUTES.length})</h2>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
                 {BUS_ROUTES.map(b => (
                   <div key={b.id} className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 12, padding: 16 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                       <div>
-                        <div className="text-body-medium" style={{ color: 'var(--text-primary)' }}>{b.operator}</div>
+                        <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{b.operator}</div>
                         <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{b.busType}</div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
@@ -185,7 +201,7 @@ export default function TravelPage() {
                     </div>
 
                     <button className="btn-primary" onClick={() => { setSelectedTicket(b); setStep('confirmed'); }}>
-                      {t('confirmBooking') || 'Book Seat'} — ₹{b.fare}
+                      Book Seat — ₹{b.fare}
                     </button>
                   </div>
                 ))}
@@ -221,23 +237,141 @@ export default function TravelPage() {
               </div>
 
               <button className="btn-primary" onClick={() => { setStep('search'); navigate('/'); }}>
-                {t('home') || 'Return to Home Dashboard'}
+                Return to Home Dashboard
               </button>
             </div>
           )}
         </>
       )}
 
-      {/* ── FLIGHTS / TRAINS PLACEHOLDER ── */}
-      {tab !== 'bus' && (
-        <div className="flat-card" style={{ textAlign: 'center', padding: 36, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'center' }}>
-          <Compass size={40} color="var(--brand-green-text)" />
-          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{tab === 'flights' ? 'Intercity Flight Search' : 'IRCTC Train Booking'}</h2>
-          <p className="text-caption" style={{ color: 'var(--text-secondary)', maxWidth: 320 }}>
-            Compare lowest fares across major airlines & IRCTC train routes with GetGo 0% booking convenience fee.
-          </p>
-          <button className="btn-primary" onClick={() => setTab('bus')}>
-            Switch to Intercity Bus Search
+      {/* ── 2. PRIVATE GROUP BUS CHARTER (50-Pax Group Travel) ── */}
+      {tab === 'charter' && (
+        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Private Group Bus Charter & Rental</h2>
+            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+              Hire private buses for group trips, tours, weddings & corporate events (12 to 50 Passengers)
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div>
+              <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
+                Number of Passengers / Group Size
+              </label>
+              <div style={{ display: 'flex', gap: 8 }}>
+                {[12, 30, 50].map(sz => (
+                  <button
+                    key={sz}
+                    type="button"
+                    onClick={() => {
+                      setGroupSize(sz);
+                      const matching = PRIVATE_BUS_CHARTERS.find(c => c.capacity === sz);
+                      if (matching) setSelectedCharterBus(matching);
+                    }}
+                    className={groupSize === sz ? 'badge-flat-green' : 'badge-flat'}
+                    style={{ flex: 1, padding: 10, cursor: 'pointer', fontSize: 13, textAlign: 'center' }}
+                  >
+                    {sz} Passengers
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
+                  Trip Starting Date
+                </label>
+                <input className="input-field" type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
+                  Trip Duration (Days)
+                </label>
+                <input className="input-field" type="number" min="1" max="15" value={charterDays} onChange={e => setCharterDays(Number(e.target.value))} />
+              </div>
+            </div>
+          </div>
+
+          {/* Selected Bus Charter Vehicle Option Card */}
+          {selectedCharterBus && (
+            <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 18, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div>
+                  <div className="text-subtitle" style={{ color: 'var(--text-primary)', fontSize: 16 }}>{selectedCharterBus.name}</div>
+                  <div className="text-caption" style={{ color: 'var(--text-muted)', marginTop: 2 }}>{selectedCharterBus.type} · Max Capacity: {selectedCharterBus.capacity} Passengers</div>
+                </div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--brand-green-text)' }}>
+                  ₹{selectedCharterBus.perKmRate}/km
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {selectedCharterBus.amenities.map((am, i) => (
+                  <span key={i} className="badge-flat" style={{ fontSize: 11 }}>
+                    <Check size={12} color="var(--brand-green-text)" /> {am}
+                  </span>
+                ))}
+              </div>
+
+              <div style={{ borderTop: '1px solid var(--border)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 14, fontWeight: 700 }}>
+                <span>Estimated Daily Rental ({charterDays} Days min {selectedCharterBus.minKmPerDay * charterDays} km)</span>
+                <span style={{ color: 'var(--brand-green-text)' }}>
+                  ₹{selectedCharterBus.minKmPerDay * selectedCharterBus.perKmRate * charterDays + (selectedCharterBus.driverAllowancePerDay * charterDays)}
+                </span>
+              </div>
+            </div>
+          )}
+
+          <button className="btn-primary" onClick={() => alert(`Group Charter Booking Requested for ${groupSize} passengers! Our travel executive will contact you shortly.`)}>
+            Request Group Bus Booking →
+          </button>
+        </div>
+      )}
+
+      {/* ── 3. INDIGO FLIGHTS TAB ── */}
+      {tab === 'flights' && (
+        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>IndiGo Flight Search & Fares</h2>
+            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+              Search domestic flights with IndiGo pre-filled search integration & zero convenience fee
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <input className="input-field" placeholder="From Airport (e.g. Chennai MAA)" value={flightFrom} onChange={e => setFlightFrom(e.target.value)} />
+            <input className="input-field" placeholder="To Airport (e.g. Delhi DEL)" value={flightTo} onChange={e => setFlightTo(e.target.value)} />
+            <input className="input-field" type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)} />
+          </div>
+
+          <button className="btn-primary" onClick={handleIndiGoRedirect} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <span>Search Flights on IndiGo Portal</span>
+            <ExternalLink size={16} />
+          </button>
+        </div>
+      )}
+
+      {/* ── 4. CONFIRMTKT TRAINS TAB ── */}
+      {tab === 'trains' && (
+        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>ConfirmTkt / IRCTC Train Search & PNR</h2>
+            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+              Check IRCTC train availability, seat booking & live PNR status with ConfirmTkt integration
+            </p>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <input className="input-field" placeholder="From Station (e.g. Chennai Central MAS)" value={trainFrom} onChange={e => setTrainFrom(e.target.value)} />
+            <input className="input-field" placeholder="To Station (e.g. Bangalore SBC)" value={trainTo} onChange={e => setTrainTo(e.target.value)} />
+            <input className="input-field" type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)} />
+          </div>
+
+          <button className="btn-primary" onClick={handleConfirmTktRedirect} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
+            <span>Search Trains on ConfirmTkt IRCTC Portal</span>
+            <ExternalLink size={16} />
           </button>
         </div>
       )}

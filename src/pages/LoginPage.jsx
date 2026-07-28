@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth, useLanguage } from '../App';
-import { ShieldCheck, Globe, UserPlus, LogIn } from 'lucide-react';
+import { ShieldCheck, Globe, UserPlus, LogIn, ArrowLeft, ChevronRight } from 'lucide-react';
 
 const LANGUAGES = [
   { id: 'English', label: 'English' },
@@ -12,63 +12,92 @@ const LANGUAGES = [
 
 export default function LoginPage() {
   const { login, registerAccount } = useAuth();
-  const { language, setLanguage } = useLanguage();
+  const { language, setLanguage, t } = useLanguage();
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
+  const [step, setStep] = useState('phone'); // 'phone' | 'otp'
 
-  // Login form state
-  const [loginPhone, setLoginPhone] = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-
-  // Register form state
+  // Phone & Registration State
+  const [phone, setPhone] = useState('');
   const [regName, setRegName] = useState('');
-  const [regPhone, setRegPhone] = useState('');
   const [regEmail, setRegEmail] = useState('');
-  const [regPassword, setRegPassword] = useState('');
 
+  // 6-Digit OTP State
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [timer, setTimer] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const otpRefs = useRef([]);
 
-  const handleLoginSubmit = (e) => {
-    e.preventDefault();
-    if (loginPhone.replace(/\D/g, '').length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
+  useEffect(() => {
+    if (timer <= 0) return;
+    const interval = setInterval(() => setTimer(t => t - 1), 1000);
+    return () => clearInterval(interval);
+  }, [timer]);
+
+  const handleSendOTP = (e) => {
+    if (e) e.preventDefault();
+    if (activeTab === 'register' && !regName.trim()) {
+      setError(t('fullName') ? 'Please enter your full name.' : 'Please enter your full name.');
       return;
     }
+    if (phone.replace(/\D/g, '').length < 10) {
+      setError(t('invalidPhoneError') || 'Please enter a valid 10-digit mobile number.');
+      return;
+    }
+
     setError('');
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      login(loginPhone, loginPassword);
+      setStep('otp');
+      setTimer(30);
+      setTimeout(() => otpRefs.current[0]?.focus(), 100);
     }, 600);
   };
 
-  const handleRegisterSubmit = (e) => {
-    e.preventDefault();
-    if (!regName.trim()) {
-      setError('Please enter your full name.');
-      return;
-    }
-    if (regPhone.replace(/\D/g, '').length < 10) {
-      setError('Please enter a valid 10-digit mobile number.');
-      return;
-    }
-    if (!regPassword || regPassword.length < 4) {
-      setError('Password must be at least 4 characters.');
-      return;
-    }
+  const handleOtpChange = (idx, val) => {
+    if (!/^\d?$/.test(val)) return;
+    const next = [...otp];
+    next[idx] = val;
+    setOtp(next);
+    if (val && idx < 5) otpRefs.current[idx + 1]?.focus();
+    if (next.every(d => d !== '')) handleVerifyOTP(next);
+  };
 
-    setError('');
+  const handleOtpKeyDown = (idx, e) => {
+    if (e.key === 'Backspace' && !otp[idx] && idx > 0) {
+      otpRefs.current[idx - 1]?.focus();
+    }
+  };
+
+  const handleVerifyOTP = (otpArr = otp) => {
+    const code = otpArr.join('');
+    if (code.length < 6) {
+      setError('Please enter the full 6-digit OTP code.');
+      return;
+    }
     setLoading(true);
+    setError('');
+
     setTimeout(() => {
       setLoading(false);
-      registerAccount({
-        name: regName,
-        phone: regPhone,
-        email: regEmail,
-        password: regPassword,
-        language: language,
-      });
+      if (activeTab === 'register') {
+        registerAccount({
+          name: regName,
+          phone: phone,
+          email: regEmail,
+          language: language,
+        });
+      } else {
+        login(phone);
+      }
     }, 600);
+  };
+
+  const handleResendOTP = () => {
+    setOtp(['', '', '', '', '', '']);
+    setTimer(30);
+    setTimeout(() => otpRefs.current[0]?.focus(), 100);
   };
 
   return (
@@ -93,7 +122,7 @@ export default function LoginPage() {
         display: 'flex',
         flexDirection: 'column',
       }}>
-        {/* Top Header Bar */}
+        {/* Header Bar with Language Selector */}
         <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}>
           <div style={{ fontSize: 20, fontWeight: 800, color: '#1B5E20', letterSpacing: '0.02em' }}>
             GetGo
@@ -104,12 +133,13 @@ export default function LoginPage() {
               value={language}
               onChange={e => setLanguage(e.target.value)}
               style={{
-                padding: '4px 8px',
+                padding: '6px 10px',
                 borderRadius: 6,
                 backgroundColor: '#F1F5F9',
                 color: '#0F172A',
                 border: '1px solid #CBD5E1',
                 fontSize: 13,
+                fontWeight: 600,
                 cursor: 'pointer'
               }}
             >
@@ -121,52 +151,54 @@ export default function LoginPage() {
         </div>
 
         {/* 2-Tab Navigation: Login vs Create Account */}
-        <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}>
-          <button
-            type="button"
-            onClick={() => { setActiveTab('login'); setError(''); }}
-            style={{
-              flex: 1,
-              padding: '14px 16px',
-              fontSize: 15,
-              fontWeight: 700,
-              backgroundColor: activeTab === 'login' ? '#FFFFFF' : 'transparent',
-              color: activeTab === 'login' ? '#1B5E20' : '#64748B',
-              borderBottom: activeTab === 'login' ? '3px solid #1B5E20' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              borderLeft: 'none', borderRight: 'none', borderTop: 'none'
-            }}
-          >
-            <LogIn size={18} />
-            <span>Login</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => { setActiveTab('register'); setError(''); }}
-            style={{
-              flex: 1,
-              padding: '14px 16px',
-              fontSize: 15,
-              fontWeight: 700,
-              backgroundColor: activeTab === 'register' ? '#FFFFFF' : 'transparent',
-              color: activeTab === 'register' ? '#1B5E20' : '#64748B',
-              borderBottom: activeTab === 'register' ? '3px solid #1B5E20' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 8,
-              cursor: 'pointer',
-              borderLeft: 'none', borderRight: 'none', borderTop: 'none'
-            }}
-          >
-            <UserPlus size={18} />
-            <span>Create Account</span>
-          </button>
-        </div>
+        {step === 'phone' && (
+          <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}>
+            <button
+              type="button"
+              onClick={() => { setActiveTab('login'); setError(''); }}
+              style={{
+                flex: 1,
+                padding: '14px 16px',
+                fontSize: 15,
+                fontWeight: 700,
+                backgroundColor: activeTab === 'login' ? '#FFFFFF' : 'transparent',
+                color: activeTab === 'login' ? '#1B5E20' : '#64748B',
+                borderBottom: activeTab === 'login' ? '3px solid #1B5E20' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                cursor: 'pointer',
+                borderLeft: 'none', borderRight: 'none', borderTop: 'none'
+              }}
+            >
+              <LogIn size={18} />
+              <span>{t('loginTab') || 'Login'}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { setActiveTab('register'); setError(''); }}
+              style={{
+                flex: 1,
+                padding: '14px 16px',
+                fontSize: 15,
+                fontWeight: 700,
+                backgroundColor: activeTab === 'register' ? '#FFFFFF' : 'transparent',
+                color: activeTab === 'register' ? '#1B5E20' : '#64748B',
+                borderBottom: activeTab === 'register' ? '3px solid #1B5E20' : 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                cursor: 'pointer',
+                borderLeft: 'none', borderRight: 'none', borderTop: 'none'
+              }}
+            >
+              <UserPlus size={18} />
+              <span>{t('createAccountTab') || 'Create Account'}</span>
+            </button>
+          </div>
+        )}
 
         {/* Form Body */}
         <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20, backgroundColor: '#FFFFFF' }}>
@@ -176,11 +208,27 @@ export default function LoginPage() {
             </div>
           )}
 
-          {activeTab === 'login' ? (
-            <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          {step === 'phone' ? (
+            <form onSubmit={handleSendOTP} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {activeTab === 'register' && (
+                <div>
+                  <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                    {t('fullName') || 'FULL NAME'}
+                  </label>
+                  <input
+                    type="text"
+                    style={{ height: 46, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
+                    placeholder="e.g. Arjun Krishnamurthy"
+                    value={regName}
+                    onChange={e => setRegName(e.target.value)}
+                    required
+                  />
+                </div>
+              )}
+
               <div>
                 <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 6 }}>
-                  MOBILE NUMBER
+                  {t('mobileNumber') || 'MOBILE NUMBER'}
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
                   <div style={{ height: 48, padding: '0 12px', backgroundColor: '#F1F5F9', border: '1px solid #CBD5E1', borderRadius: 8, display: 'flex', alignItems: 'center', fontWeight: 700, color: '#0F172A' }}>
@@ -190,115 +238,124 @@ export default function LoginPage() {
                     type="tel"
                     style={{ height: 48, flex: 1, padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 15, fontWeight: 600, outline: 'none' }}
                     placeholder="98765 43210"
-                    value={loginPhone}
-                    onChange={e => setLoginPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                    value={phone}
+                    onChange={e => setPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
                     required
                     maxLength={10}
                   />
                 </div>
               </div>
 
-              <div>
-                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 6 }}>
-                  PASSWORD
-                </label>
-                <input
-                  type="password"
-                  style={{ height: 48, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 15, outline: 'none' }}
-                  placeholder="Enter your password"
-                  value={loginPassword}
-                  onChange={e => setLoginPassword(e.target.value)}
-                />
-              </div>
+              {activeTab === 'register' && (
+                <div>
+                  <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                    {t('emailOptional') || 'EMAIL ADDRESS (OPTIONAL)'}
+                  </label>
+                  <input
+                    type="email"
+                    style={{ height: 46, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
+                    placeholder="arjun@gmail.com"
+                    value={regEmail}
+                    onChange={e => setRegEmail(e.target.value)}
+                  />
+                </div>
+              )}
 
               <button
                 type="submit"
                 disabled={loading}
-                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8, backgroundColor: '#1B5E20', color: '#FFFFFF', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+                style={{ height: 50, fontSize: 16, fontWeight: 700, marginTop: 8, backgroundColor: '#1B5E20', color: '#FFFFFF', border: 'none', borderRadius: 8, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
               >
-                {loading ? 'Authenticating…' : 'Login to GetGo'}
+                <span>{loading ? (t('sendingOtp') || 'Sending OTP…') : (t('sendOtp') || 'Get OTP Code')}</span>
+                {!loading && <ChevronRight size={18} />}
               </button>
-
-              <p style={{ color: '#64748B', textAlign: 'center', fontSize: 12 }}>
-                Quick login: Enter any 10-digit number to proceed
-              </p>
             </form>
           ) : (
-            <form onSubmit={handleRegisterSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
               <div>
-                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
-                  FULL NAME
-                </label>
-                <input
-                  type="text"
-                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
-                  placeholder="e.g. Arjun Krishnamurthy"
-                  value={regName}
-                  onChange={e => setRegName(e.target.value)}
-                  required
-                />
+                <button
+                  type="button"
+                  onClick={() => { setStep('phone'); setOtp(['','','','','','']); setError(''); }}
+                  style={{ paddingLeft: 0, marginBottom: 10, fontSize: 13, fontWeight: 600, color: '#1B5E20', display: 'flex', alignItems: 'center', gap: 6, background: 'none', border: 'none', cursor: 'pointer' }}
+                >
+                  <ArrowLeft size={16} /> {t('changePhone') || 'Change Mobile Number'}
+                </button>
+                <h2 style={{ fontSize: 18, fontWeight: 700, color: '#0F172A' }}>
+                  {t('enterOtp') || 'Enter 6-Digit OTP Code'}
+                </h2>
+                <p style={{ fontSize: 13, color: '#64748B', marginTop: 4 }}>
+                  {t('codeSentTo') || 'Sent 6-digit OTP code to'} <strong style={{ color: '#0F172A' }}>+91 {phone}</strong>
+                </p>
               </div>
 
-              <div>
-                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
-                  MOBILE NUMBER
-                </label>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <div style={{ height: 44, padding: '0 12px', backgroundColor: '#F1F5F9', border: '1px solid #CBD5E1', borderRadius: 8, display: 'flex', alignItems: 'center', fontWeight: 700, color: '#0F172A' }}>
-                    🇮🇳 +91
-                  </div>
+              {/* 6-Digit OTP Input Boxes */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8 }}>
+                {otp.map((d, i) => (
                   <input
+                    key={i}
+                    ref={el => (otpRefs.current[i] = el)}
                     type="tel"
-                    style={{ height: 44, flex: 1, padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, fontWeight: 600, outline: 'none' }}
-                    placeholder="98765 43210"
-                    value={regPhone}
-                    onChange={e => setRegPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                    required
-                    maxLength={10}
+                    inputMode="numeric"
+                    maxLength={1}
+                    value={d}
+                    onChange={e => handleOtpChange(i, e.target.value)}
+                    onKeyDown={e => handleOtpKeyDown(i, e)}
+                    style={{
+                      height: 50,
+                      width: '100%',
+                      backgroundColor: '#F8FAFC',
+                      border: `2px solid ${d ? '#1B5E20' : '#CBD5E1'}`,
+                      borderRadius: 8,
+                      textAlign: 'center',
+                      fontSize: 20,
+                      fontWeight: 700,
+                      color: '#0F172A',
+                      outline: 'none'
+                    }}
                   />
-                </div>
+                ))}
               </div>
 
-              <div>
-                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
-                  EMAIL ADDRESS (OPTIONAL)
-                </label>
-                <input
-                  type="email"
-                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
-                  placeholder="arjun@gmail.com"
-                  value={regEmail}
-                  onChange={e => setRegEmail(e.target.value)}
-                />
-              </div>
-
-              <div>
-                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
-                  CREATE PASSWORD
-                </label>
-                <input
-                  type="password"
-                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
-                  placeholder="At least 4 characters"
-                  value={regPassword}
-                  onChange={e => setRegPassword(e.target.value)}
-                  required
-                />
+              <div style={{ textAlign: 'center' }}>
+                {timer > 0 ? (
+                  <span style={{ fontSize: 13, color: '#64748B' }}>
+                    {t('resendIn') || 'Resend code in'} <strong style={{ color: '#1B5E20' }}>{timer}s</strong>
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={handleResendOTP}
+                    style={{ fontWeight: 600, color: '#1B5E20', fontSize: 13, background: 'none', border: 'none', cursor: 'pointer' }}
+                  >
+                    {t('resendOtp') || 'Resend OTP Code'}
+                  </button>
+                )}
               </div>
 
               <button
-                type="submit"
-                disabled={loading}
-                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8, backgroundColor: '#1B5E20', color: '#FFFFFF', border: 'none', borderRadius: 8, cursor: 'pointer' }}
+                type="button"
+                onClick={() => handleVerifyOTP()}
+                disabled={loading || otp.some(d => !d)}
+                style={{
+                  height: 50,
+                  fontSize: 16,
+                  fontWeight: 700,
+                  backgroundColor: '#1B5E20',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  borderRadius: 8,
+                  cursor: 'pointer',
+                  opacity: otp.some(d => !d) ? 0.6 : 1
+                }}
               >
-                {loading ? 'Creating Account…' : 'Create Account & Login'}
+                {loading ? 'Verifying…' : (activeTab === 'register' ? (t('verifyAndRegister') || 'Verify OTP & Create Account') : (t('verifyAndLogin') || 'Verify OTP & Login'))}
               </button>
-            </form>
+            </div>
           )}
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, color: '#64748B' }}>
             <ShieldCheck size={16} color="#1B5E20" />
-            <span>100% Encrypted & Safe Authentication</span>
+            <span>100% Encrypted & Safe OTP Authentication</span>
           </div>
         </div>
       </div>

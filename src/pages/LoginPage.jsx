@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, useLanguage } from '../App';
-import { ShieldCheck, User, Phone, Lock, Mail, Globe, ArrowRight, UserPlus, LogIn } from 'lucide-react';
+import { ShieldCheck, Globe, UserPlus, LogIn } from 'lucide-react';
 
 const LANGUAGES = [
   { id: 'English', label: 'English' },
@@ -12,7 +12,7 @@ const LANGUAGES = [
 
 export default function LoginPage() {
   const { login, registerAccount } = useAuth();
-  const { language, setLanguage, t } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const [activeTab, setActiveTab] = useState('login'); // 'login' | 'register'
 
   // Login form state
@@ -79,35 +79,36 @@ export default function LoginPage() {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '24px 16px',
-      backgroundColor: 'var(--bg-page)',
+      backgroundColor: '#F8FAFC',
+      color: '#0F172A'
     }}>
       <div style={{
         width: '100%',
         maxWidth: 420,
-        backgroundColor: 'var(--bg-surface)',
-        border: '1px solid var(--border)',
-        borderRadius: 'var(--radius-lg)',
-        boxShadow: 'var(--shadow-flat)',
+        backgroundColor: '#FFFFFF',
+        border: '1px solid #E2E8F0',
+        borderRadius: 16,
+        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
       }}>
-        {/* Language selector on top right */}
-        <div style={{ padding: '16px 20px 8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--border)' }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--brand-green-text)', letterSpacing: '0.02em' }}>
+        {/* Top Header Bar */}
+        <div style={{ padding: '16px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E8F0', backgroundColor: '#FFFFFF' }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: '#1B5E20', letterSpacing: '0.02em' }}>
             GetGo
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Globe size={15} color="var(--text-secondary)" />
+            <Globe size={15} color="#64748B" />
             <select
               value={language}
               onChange={e => setLanguage(e.target.value)}
               style={{
                 padding: '4px 8px',
-                borderRadius: 'var(--radius-sm)',
-                backgroundColor: 'var(--bg-secondary)',
-                color: 'var(--text-primary)',
-                border: '1px solid var(--border)',
+                borderRadius: 6,
+                backgroundColor: '#F1F5F9',
+                color: '#0F172A',
+                border: '1px solid #CBD5E1',
                 fontSize: 13,
                 cursor: 'pointer'
               }}
@@ -120,7 +121,7 @@ export default function LoginPage() {
         </div>
 
         {/* 2-Tab Navigation: Login vs Create Account */}
-        <div style={{ display: 'flex', borderBottom: '1px solid var(--border)', backgroundColor: 'var(--bg-secondary)' }}>
+        <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0', backgroundColor: '#F8FAFC' }}>
           <button
             type="button"
             onClick={() => { setActiveTab('login'); setError(''); }}
@@ -129,14 +130,15 @@ export default function LoginPage() {
               padding: '14px 16px',
               fontSize: 15,
               fontWeight: 700,
-              backgroundColor: activeTab === 'login' ? 'var(--bg-surface)' : 'transparent',
-              color: activeTab === 'login' ? 'var(--brand-green-text)' : 'var(--text-secondary)',
-              borderBottom: activeTab === 'login' ? '3px solid var(--brand-green)' : 'none',
+              backgroundColor: activeTab === 'login' ? '#FFFFFF' : 'transparent',
+              color: activeTab === 'login' ? '#1B5E20' : '#64748B',
+              borderBottom: activeTab === 'login' ? '3px solid #1B5E20' : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 8,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderLeft: 'none', borderRight: 'none', borderTop: 'none'
             }}
           >
             <LogIn size={18} />
@@ -150,14 +152,15 @@ export default function LoginPage() {
               padding: '14px 16px',
               fontSize: 15,
               fontWeight: 700,
-              backgroundColor: activeTab === 'register' ? 'var(--bg-surface)' : 'transparent',
-              color: activeTab === 'register' ? 'var(--brand-green-text)' : 'var(--text-secondary)',
-              borderBottom: activeTab === 'register' ? '3px solid var(--brand-green)' : 'none',
+              backgroundColor: activeTab === 'register' ? '#FFFFFF' : 'transparent',
+              color: activeTab === 'register' ? '#1B5E20' : '#64748B',
+              borderBottom: activeTab === 'register' ? '3px solid #1B5E20' : 'none',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 8,
-              cursor: 'pointer'
+              cursor: 'pointer',
+              borderLeft: 'none', borderRight: 'none', borderTop: 'none'
             }}
           >
             <UserPlus size={18} />
@@ -166,9 +169,9 @@ export default function LoginPage() {
         </div>
 
         {/* Form Body */}
-        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20 }}>
+        <div style={{ padding: 24, display: 'flex', flexDirection: 'column', gap: 20, backgroundColor: '#FFFFFF' }}>
           {error && (
-            <div style={{ padding: 12, borderRadius: 'var(--radius-sm)', backgroundColor: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#EF4444', fontSize: 13, textAlign: 'center' }}>
+            <div style={{ padding: 12, borderRadius: 8, backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', color: '#DC2626', fontSize: 13, textAlign: 'center' }}>
               {error}
             </div>
           )}
@@ -176,16 +179,16 @@ export default function LoginPage() {
           {activeTab === 'login' ? (
             <form onSubmit={handleLoginSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  Mobile Number
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 6 }}>
+                  MOBILE NUMBER
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <div style={{ height: 48, padding: '0 12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <div style={{ height: 48, padding: '0 12px', backgroundColor: '#F1F5F9', border: '1px solid #CBD5E1', borderRadius: 8, display: 'flex', alignItems: 'center', fontWeight: 700, color: '#0F172A' }}>
                     🇮🇳 +91
                   </div>
                   <input
                     type="tel"
-                    className="input-field"
+                    style={{ height: 48, flex: 1, padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 15, fontWeight: 600, outline: 'none' }}
                     placeholder="98765 43210"
                     value={loginPhone}
                     onChange={e => setLoginPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
@@ -196,12 +199,12 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                  Password
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 6 }}>
+                  PASSWORD
                 </label>
                 <input
                   type="password"
-                  className="input-field"
+                  style={{ height: 48, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 15, outline: 'none' }}
                   placeholder="Enter your password"
                   value={loginPassword}
                   onChange={e => setLoginPassword(e.target.value)}
@@ -210,26 +213,25 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="btn-primary"
                 disabled={loading}
-                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8 }}
+                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8, backgroundColor: '#1B5E20', color: '#FFFFFF', border: 'none', borderRadius: 8, cursor: 'pointer' }}
               >
                 {loading ? 'Authenticating…' : 'Login to GetGo'}
               </button>
 
-              <p className="text-caption" style={{ color: 'var(--text-muted)', textAlign: 'center' }}>
+              <p style={{ color: '#64748B', textAlign: 'center', fontSize: 12 }}>
                 Quick login: Enter any 10-digit number to proceed
               </p>
             </form>
           ) : (
             <form onSubmit={handleRegisterSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Full Name
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                  FULL NAME
                 </label>
                 <input
                   type="text"
-                  className="input-field"
+                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
                   placeholder="e.g. Arjun Krishnamurthy"
                   value={regName}
                   onChange={e => setRegName(e.target.value)}
@@ -238,16 +240,16 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Mobile Number
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                  MOBILE NUMBER
                 </label>
                 <div style={{ display: 'flex', gap: 8 }}>
-                  <div style={{ height: 44, padding: '0 12px', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', fontWeight: 700, color: 'var(--text-primary)' }}>
+                  <div style={{ height: 44, padding: '0 12px', backgroundColor: '#F1F5F9', border: '1px solid #CBD5E1', borderRadius: 8, display: 'flex', alignItems: 'center', fontWeight: 700, color: '#0F172A' }}>
                     🇮🇳 +91
                   </div>
                   <input
                     type="tel"
-                    className="input-field"
+                    style={{ height: 44, flex: 1, padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, fontWeight: 600, outline: 'none' }}
                     placeholder="98765 43210"
                     value={regPhone}
                     onChange={e => setRegPhone(e.target.value.replace(/\D/g, '').slice(0, 10))}
@@ -258,12 +260,12 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Email Address (Optional)
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                  EMAIL ADDRESS (OPTIONAL)
                 </label>
                 <input
                   type="email"
-                  className="input-field"
+                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
                   placeholder="arjun@gmail.com"
                   value={regEmail}
                   onChange={e => setRegEmail(e.target.value)}
@@ -271,12 +273,12 @@ export default function LoginPage() {
               </div>
 
               <div>
-                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Create Password
+                <label style={{ color: '#475569', fontWeight: 600, fontSize: 12, display: 'block', marginBottom: 4 }}>
+                  CREATE PASSWORD
                 </label>
                 <input
                   type="password"
-                  className="input-field"
+                  style={{ height: 44, width: '100%', padding: '0 14px', backgroundColor: '#FFFFFF', border: '1px solid #CBD5E1', borderRadius: 8, color: '#0F172A', fontSize: 14, outline: 'none' }}
                   placeholder="At least 4 characters"
                   value={regPassword}
                   onChange={e => setRegPassword(e.target.value)}
@@ -286,17 +288,16 @@ export default function LoginPage() {
 
               <button
                 type="submit"
-                className="btn-primary"
                 disabled={loading}
-                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8 }}
+                style={{ height: 48, fontSize: 16, fontWeight: 700, marginTop: 8, backgroundColor: '#1B5E20', color: '#FFFFFF', border: 'none', borderRadius: 8, cursor: 'pointer' }}
               >
                 {loading ? 'Creating Account…' : 'Create Account & Login'}
               </button>
             </form>
           )}
 
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, color: 'var(--text-muted)' }}>
-            <ShieldCheck size={16} color="var(--brand-green-text)" />
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6, fontSize: 12, color: '#64748B' }}>
+            <ShieldCheck size={16} color="#1B5E20" />
             <span>100% Encrypted & Safe Authentication</span>
           </div>
         </div>

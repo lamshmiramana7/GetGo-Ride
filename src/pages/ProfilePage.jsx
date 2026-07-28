@@ -9,7 +9,9 @@ export default function ProfilePage() {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useLanguage();
+
   const [activeModal, setActiveModal] = useState(null); // 'settings' | 'saved' | 'payment' | 'language'
+  const [selectedPaymentId, setSelectedPaymentId] = useState('pm001');
   const [addresses, setAddresses] = useState(SAVED_ADDRESSES);
   const [newLabel, setNewLabel] = useState('');
   const [newAddress, setNewAddress] = useState('');
@@ -153,7 +155,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Settings Modal (EXCLUSIVE location for Dark Mode Toggle per prompt) */}
+      {/* ── 1. SETTINGS MODAL (EXCLUSIVE Dark Mode location) ── */}
       {activeModal === 'settings' && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -182,7 +184,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Saved Addresses Modal */}
+      {/* ── 2. SAVED ADDRESSES MODAL ── */}
       {activeModal === 'saved' && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -216,7 +218,46 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Language Modal */}
+      {/* ── 3. PAYMENT METHODS MODAL ── */}
+      {activeModal === 'payment' && (
+        <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+          <div className="flat-card" style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Payment Methods</h2>
+              <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {PAYMENT_METHODS.map(pm => {
+                const isSel = selectedPaymentId === pm.id;
+                return (
+                  <div
+                    key={pm.id}
+                    onClick={() => setSelectedPaymentId(pm.id)}
+                    className={isSel ? 'flat-card-selected' : 'flat-card-interactive'}
+                    style={{ padding: 14, display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}
+                  >
+                    <div style={{ fontSize: 20 }}>{pm.icon}</div>
+                    <div style={{ flex: 1 }}>
+                      <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{pm.label}</div>
+                      <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{pm.detail}</div>
+                    </div>
+                    {isSel && <Check size={18} color="var(--brand-green-text)" />}
+                  </div>
+                );
+              })}
+            </div>
+
+            <button className="btn-primary" onClick={() => setActiveModal(null)}>
+              Done
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ── 4. LANGUAGE SELECTION MODAL ── */}
       {activeModal === 'language' && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 16 }}>

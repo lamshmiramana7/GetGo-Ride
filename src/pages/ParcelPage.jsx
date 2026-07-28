@@ -65,8 +65,15 @@ function useAnimatedMarker(path, intervalMs = 110) {
 function MapFit({ positions }) {
   const map = useMap();
   useEffect(() => {
-    if (positions && positions.length >= 2) {
-      map.fitBounds(L.latLngBounds(positions), { padding: [44, 44], maxZoom: 15 });
+    try {
+      if (Array.isArray(positions) && positions.length >= 2) {
+        const valid = positions.filter(p => Array.isArray(p) && typeof p[0] === 'number' && !isNaN(p[0]) && typeof p[1] === 'number' && !isNaN(p[1]));
+        if (valid.length >= 2) {
+          map.fitBounds(L.latLngBounds(valid), { padding: [40, 40], maxZoom: 15 });
+        }
+      }
+    } catch (e) {
+      console.warn('MapFit error:', e);
     }
   }, [JSON.stringify(positions)]);
   return null;

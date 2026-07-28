@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Package, MapPin, ArrowLeft, Check, X } from 'lucide-react';
 import { MOCK_DRIVERS, SAVED_ADDRESSES, CHENNAI_LOCATIONS, PAYMENT_METHODS } from '../data/mockData';
 import { useLanguage, useLocation } from '../App';
 

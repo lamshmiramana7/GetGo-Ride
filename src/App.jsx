@@ -44,10 +44,19 @@ export default function App() {
 
   const [activeTrip, setActiveTrip] = useState(null);
 
-  // Hardened Light Mode Default per prompt requirements
+  // Hardened Light Mode Default — clears any stale dark keys on startup
   const [theme, setTheme] = useState(() => {
+    // Remove old 'gg-theme' key from previous sessions that may have stored 'dark'
+    const oldTheme = localStorage.getItem('gg-theme');
+    if (oldTheme) localStorage.removeItem('gg-theme');
+    // Only activate dark if user explicitly toggled it THIS session
     const explicit = localStorage.getItem('gg-explicit-dark');
-    return explicit === 'true' ? 'dark' : 'light';
+    if (explicit !== 'true') {
+      // Ensure dark is not accidentally set
+      localStorage.setItem('gg-explicit-dark', 'false');
+      return 'light';
+    }
+    return 'dark';
   });
 
   useEffect(() => {

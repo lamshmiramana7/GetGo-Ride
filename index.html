@@ -15,6 +15,21 @@
     <title>GetGo Ride — Book Rides, Parcels & Travel</title>
   </head>
   <body>
+    <!-- Inline theme enforcement: runs before React to prevent dark flash -->
+    <script>
+      (function() {
+        // Remove old 'gg-theme' key from past sessions
+        localStorage.removeItem('gg-theme');
+        // Default to light unless user explicitly toggled dark
+        var explicit = localStorage.getItem('gg-explicit-dark');
+        if (explicit !== 'true') {
+          localStorage.setItem('gg-explicit-dark', 'false');
+          document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth, useTheme, useLanguage } from '../App';
-import { User, ShieldCheck, Sun, Moon, Globe, MapPin, CreditCard, LogOut, ChevronRight, Gift, HelpCircle, FileText, Check, Plus, Trash2, X, Settings } from 'lucide-react';
+import { User, ShieldCheck, Sun, Moon, Globe, MapPin, CreditCard, LogOut, ChevronRight, Check, Plus, Trash2, X, Settings } from 'lucide-react';
 import { MOCK_USER, SAVED_ADDRESSES, PAYMENT_METHODS } from '../data/mockData';
 
 const LANGUAGES = ['English', 'தமிழ் (Tamil)', 'हिन्दी (Hindi)', 'తెలుగు (Telugu)', 'Malayalam'];
@@ -88,8 +88,8 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <Settings size={20} color="var(--brand-green-text)" />
             <div>
-              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>App Settings & Theme</div>
-              <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Toggle Dark Mode & Preferences</div>
+              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('appSettingsTheme') || 'App Settings & Theme'}</div>
+              <div className="text-caption" style={{ color: 'var(--text-muted)' }}>{t('toggleDarkMode') || 'Toggle Dark Mode & Preferences'}</div>
             </div>
           </div>
           <ChevronRight size={18} color="var(--text-muted)" />
@@ -103,7 +103,7 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <MapPin size={20} color="var(--brand-green-text)" />
             <div>
-              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Saved Addresses</div>
+              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('savedAddresses') || 'Saved Addresses'}</div>
               <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Home, Office, Frequent Stops</div>
             </div>
           </div>
@@ -118,7 +118,7 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <CreditCard size={20} color="var(--brand-green-text)" />
             <div>
-              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>Payment Methods</div>
+              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('paymentMethods') || 'Payment Methods'}</div>
               <div className="text-caption" style={{ color: 'var(--text-muted)' }}>UPI, Cards, Cash & Wallet</div>
             </div>
           </div>
@@ -133,7 +133,7 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <Globe size={20} color="var(--brand-green-text)" />
             <div>
-              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>App Language</div>
+              <div className="text-body-medium" style={{ color: 'var(--text-primary)', fontWeight: 600 }}>{t('appLanguage') || 'App Language'}</div>
               <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Currently: {language}</div>
             </div>
           </div>
@@ -148,7 +148,7 @@ export default function ProfilePage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
             <LogOut size={20} color="#EF4444" />
             <div>
-              <div className="text-body-medium" style={{ color: '#EF4444', fontWeight: 600 }}>Sign Out</div>
+              <div className="text-body-medium" style={{ color: '#EF4444', fontWeight: 600 }}>{t('logout') || 'Sign Out'}</div>
               <div className="text-caption" style={{ color: 'var(--text-muted)' }}>Log out from this device</div>
             </div>
           </div>
@@ -160,7 +160,7 @@ export default function ProfilePage() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 400, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Profile Settings</h2>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('appSettingsTheme') || 'Profile Settings'}</h2>
               <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
                 <X size={18} />
               </button>
@@ -189,7 +189,7 @@ export default function ProfilePage() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Saved Addresses</h2>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('savedAddresses') || 'Saved Addresses'}</h2>
               <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
                 <X size={18} />
               </button>
@@ -223,7 +223,7 @@ export default function ProfilePage() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 420, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Payment Methods</h2>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('paymentMethods') || 'Payment Methods'}</h2>
               <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
                 <X size={18} />
               </button>
@@ -262,7 +262,7 @@ export default function ProfilePage() {
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
           <div className="flat-card" style={{ width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>Select Language</h2>
+              <h2 className="text-subtitle" style={{ color: 'var(--text-primary)' }}>{t('language') || 'Select Language'}</h2>
               <button onClick={() => setActiveModal(null)} className="btn-secondary" style={{ width: 36, height: 36, padding: 0 }}>
                 <X size={18} />
               </button>

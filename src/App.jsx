@@ -44,16 +44,22 @@ export default function App() {
 
   const [activeTrip, setActiveTrip] = useState(null);
 
-  // Default theme is LIGHT mode per prompt requirements
-  const [theme, setTheme] = useState(() => localStorage.getItem('gg-theme') || 'light');
+  // Hardened Light Mode Default per prompt requirements
+  const [theme, setTheme] = useState(() => {
+    const explicit = localStorage.getItem('gg-explicit-dark');
+    return explicit === 'true' ? 'dark' : 'light';
+  });
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('gg-theme', theme);
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme(t => (t === 'dark' ? 'light' : 'dark'));
+    setTheme(current => {
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('gg-explicit-dark', next === 'dark' ? 'true' : 'false');
+      return next;
+    });
   }, []);
 
   // Location management & Geolocation API permission
@@ -70,7 +76,7 @@ export default function App() {
           setLocationPermissionGranted(true);
         },
         (err) => {
-          console.warn('Geolocation denied or unavailable, fallback to default:', err.message);
+          console.warn('Geolocation fallback to default:', err.message);
           setUserLocation('Chennai, Tamil Nadu');
           localStorage.setItem('gg-user-loc', 'Chennai, Tamil Nadu');
         }
@@ -95,14 +101,14 @@ export default function App() {
   }, [language]);
 
   // Authenticate user with saved credentials
-  const login = useCallback((phone, password) => {
+  const login = useCallback((phone) => {
     const db = JSON.parse(localStorage.getItem('gg-registered-users') || '[]');
     const cleanPhone = phone.replace(/\D/g, '');
     const found = db.find(u => u.phone.replace(/\D/g, '') === cleanPhone);
 
     const loggedInUser = found || {
       ...MOCK_USER,
-      phone: `+91 ${cleanPhone || '9876543210'}`,
+      phone: cleanPhone || '9876543210',
       name: found ? found.name : 'Registered Rider',
     };
 
@@ -118,7 +124,6 @@ export default function App() {
       name: userData.name,
       phone: userData.phone,
       email: userData.email || `${userData.phone}@getgoride.in`,
-      password: userData.password,
       language: userData.language || 'English',
       wallet: 500.00,
     };

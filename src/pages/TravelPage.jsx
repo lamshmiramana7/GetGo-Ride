@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, Users, ShieldCheck, Ticket } from 'lucide-react';
+import { Bus, Plane, Compass, ArrowLeft, Search, Calendar, MapPin, ExternalLink, Check, Users, ShieldCheck, Ticket, X } from 'lucide-react';
 import { BUS_ROUTES, PRIVATE_BUS_CHARTERS, INDIAN_GEOGRAPHY } from '../data/mockData';
 import { useLanguage } from '../App';
 
@@ -24,9 +24,13 @@ export default function TravelPage() {
   const [selectedTicket, setSelectedTicket] = useState(null);
 
   // Group Charter State
-  const [groupSize, setGroupSize] = useState(30);
+  const [charterFrom, setCharterFrom] = useState('Chennai, Tamil Nadu');
+  const [charterTo, setCharterTo] = useState('Ooty / Kodaikanal, Tamil Nadu');
+  const [groupSize, setGroupSize] = useState(50);
   const [charterDays, setCharterDays] = useState(2);
-  const [selectedCharterBus, setSelectedCharterBus] = useState(PRIVATE_BUS_CHARTERS[1]);
+  const [selectedCharterBus, setSelectedCharterBus] = useState(PRIVATE_BUS_CHARTERS[2]); // 50-seater Volvo default
+  const [showCharterConfirmModal, setShowCharterConfirmModal] = useState(false);
+  const [charterBookingRef, setCharterBookingRef] = useState('');
 
   // Flight Search State
   const [flightFrom, setFlightFrom] = useState('Chennai (MAA)');
@@ -40,15 +44,25 @@ export default function TravelPage() {
     setStep('results');
   };
 
+  const handleCharterRequest = () => {
+    const ref = `GG-CHARTER-${Math.floor(100000 + Math.random() * 900000)}`;
+    setCharterBookingRef(ref);
+    setShowCharterConfirmModal(true);
+  };
+
   const handleIndiGoRedirect = () => {
     const url = `https://www.goindigo.in/?origin=${encodeURIComponent(flightFrom.slice(0, 3))}&destination=${encodeURIComponent(flightTo.slice(0, 3))}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleConfirmTktRedirect = () => {
-    const url = `https://www.confirmtkt.com/r列車-search/${encodeURIComponent(trainFrom.split(' ')[0])}-to-${encodeURIComponent(trainTo.split(' ')[0])}`;
+    const url = `https://www.confirmtkt.com/rbooking/`;
     window.open(url, '_blank', 'noopener,noreferrer');
   };
+
+  const calculatedCharterTotal = selectedCharterBus
+    ? (selectedCharterBus.minKmPerDay * selectedCharterBus.perKmRate * charterDays) + (selectedCharterBus.driverAllowancePerDay * charterDays)
+    : 15600;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingBottom: 24 }}>
@@ -66,7 +80,7 @@ export default function TravelPage() {
         </button>
         <div>
           <h1 className="text-section" style={{ color: 'var(--text-primary)' }}>
-            {t('travel') || 'Intercity Travel & Group Bus Charter'}
+            {t('intercityCharterTitle') || 'Intercity Travel & Group Bus Charter'}
           </h1>
           <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
             Scheduled Buses, 50-Passenger Group Charters, IndiGo Flights & ConfirmTkt Trains
@@ -77,10 +91,10 @@ export default function TravelPage() {
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 6, backgroundColor: 'var(--bg-surface)', padding: 4, borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', flexWrap: 'wrap' }}>
         {[
-          { id: 'bus', label: 'Intercity Bus', icon: Bus },
-          { id: 'charter', label: 'Group Bus Charter (50 Pax)', icon: Users },
-          { id: 'flights', label: 'IndiGo Flights', icon: Plane },
-          { id: 'trains', label: 'ConfirmTkt Trains', icon: Compass },
+          { id: 'bus', label: t('intercityBusTab') || 'Intercity Bus', icon: Bus },
+          { id: 'charter', label: t('groupCharterTab') || 'Group Bus Charter (50 Pax)', icon: Users },
+          { id: 'flights', label: t('flightsTab') || 'IndiGo Flights', icon: Plane },
+          { id: 'trains', label: t('trainsTab') || 'ConfirmTkt Trains', icon: Compass },
         ].map(tObj => {
           const Icon = tObj.icon;
           const isAct = tab === tObj.id;
@@ -117,7 +131,7 @@ export default function TravelPage() {
           {step === 'search' && (
             <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div>
-                <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Search Intercity Volvo & AC Buses</h2>
+                <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('searchBuses') || 'Search Intercity Volvo & AC Buses'}</h2>
                 <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>Express AC Sleeper & Seater buses across Tamil Nadu & India</p>
               </div>
 
@@ -244,20 +258,35 @@ export default function TravelPage() {
         </>
       )}
 
-      {/* ── 2. PRIVATE GROUP BUS CHARTER (50-Pax Group Travel) ── */}
+      {/* ── 2. PRIVATE GROUP BUS CHARTER (12 to 50 Passengers) ── */}
       {tab === 'charter' && (
         <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <div>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Private Group Bus Charter & Rental</h2>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>{t('groupCharterTitle') || 'Private Group Bus Charter & Rental'}</h2>
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
               Hire private buses for group trips, tours, weddings & corporate events (12 to 50 Passengers)
             </p>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
+                  Starting Pickup City
+                </label>
+                <input className="input-field" placeholder="e.g. Chennai, Tamil Nadu" value={charterFrom} onChange={e => setCharterFrom(e.target.value)} />
+              </div>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
+                  Destination Tour City
+                </label>
+                <input className="input-field" placeholder="e.g. Ooty, Tamil Nadu" value={charterTo} onChange={e => setCharterTo(e.target.value)} />
+              </div>
+            </div>
+
             <div>
               <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 6 }}>
-                Number of Passengers / Group Size
+                {t('passengerGroupSize') || 'Number of Passengers / Group Size'}
               </label>
               <div style={{ display: 'flex', gap: 8 }}>
                 {[12, 30, 50].map(sz => (
@@ -270,7 +299,7 @@ export default function TravelPage() {
                       if (matching) setSelectedCharterBus(matching);
                     }}
                     className={groupSize === sz ? 'badge-flat-green' : 'badge-flat'}
-                    style={{ flex: 1, padding: 10, cursor: 'pointer', fontSize: 13, textAlign: 'center' }}
+                    style={{ flex: 1, padding: 12, cursor: 'pointer', fontSize: 13, textAlign: 'center', fontWeight: 700 }}
                   >
                     {sz} Passengers
                   </button>
@@ -281,15 +310,15 @@ export default function TravelPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12 }}>
               <div>
                 <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Trip Starting Date
+                  {t('tripStartDate') || 'Trip Starting Date'}
                 </label>
                 <input className="input-field" type="date" value={travelDate} onChange={e => setTravelDate(e.target.value)} />
               </div>
               <div>
                 <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                  Trip Duration (Days)
+                  {t('tripDurationDays') || 'Trip Duration (Days)'}
                 </label>
-                <input className="input-field" type="number" min="1" max="15" value={charterDays} onChange={e => setCharterDays(Number(e.target.value))} />
+                <input className="input-field" type="number" min="1" max="15" value={charterDays} onChange={e => setCharterDays(Math.max(1, Number(e.target.value)))} />
               </div>
             </div>
           </div>
@@ -316,17 +345,57 @@ export default function TravelPage() {
               </div>
 
               <div style={{ borderTop: '1px solid var(--border)', paddingTop: 10, display: 'flex', justifyContent: 'space-between', fontSize: 14, fontWeight: 700 }}>
-                <span>Estimated Daily Rental ({charterDays} Days min {selectedCharterBus.minKmPerDay * charterDays} km)</span>
-                <span style={{ color: 'var(--brand-green-text)' }}>
-                  ₹{selectedCharterBus.minKmPerDay * selectedCharterBus.perKmRate * charterDays + (selectedCharterBus.driverAllowancePerDay * charterDays)}
+                <span>Estimated Rental ({charterDays} Days × {selectedCharterBus.minKmPerDay} km/day min)</span>
+                <span style={{ color: 'var(--brand-green-text)', fontSize: 18 }}>
+                  ₹{calculatedCharterTotal}
                 </span>
               </div>
             </div>
           )}
 
-          <button className="btn-primary" onClick={() => alert(`Group Charter Booking Requested for ${groupSize} passengers! Our travel executive will contact you shortly.`)}>
-            Request Group Bus Booking →
+          <button className="btn-primary" onClick={handleCharterRequest} style={{ height: 48, fontSize: 16 }}>
+            {t('requestGroupBooking') || 'Request Group Bus Booking →'}
           </button>
+
+          {/* Group Charter Confirmation Modal */}
+          {showCharterConfirmModal && (
+            <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
+              <div className="flat-card" style={{ width: '100%', maxWidth: 440, display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ textAlign: 'center' }}>
+                  <span className="badge-flat-green"><Check size={14} /> Group Charter Requested</span>
+                  <h2 className="text-subtitle" style={{ color: 'var(--text-primary)', marginTop: 8 }}>{selectedCharterBus?.name}</h2>
+                  <p className="text-caption" style={{ color: 'var(--text-muted)' }}>Booking Ref: #{charterBookingRef}</p>
+                </div>
+
+                <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: 10, fontSize: 14 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Route</span>
+                    <span style={{ fontWeight: 600 }}>{charterFrom} → {charterTo}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Group Size</span>
+                    <span style={{ fontWeight: 600 }}>{groupSize} Passengers</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ color: 'var(--text-secondary)' }}>Start Date & Duration</span>
+                    <span style={{ fontWeight: 600 }}>{travelDate} ({charterDays} Days)</span>
+                  </div>
+                  <div style={{ borderTop: '1px solid var(--border)', paddingTop: 8, display: 'flex', justifyContent: 'space-between', fontWeight: 800 }}>
+                    <span>Estimated Total Rental</span>
+                    <span style={{ color: 'var(--brand-green-text)', fontSize: 18 }}>₹{calculatedCharterTotal}</span>
+                  </div>
+                </div>
+
+                <p className="text-caption" style={{ color: 'var(--text-muted)', textAlign: 'center' }}>
+                  Our GetGo Travel Executive will contact you shortly to confirm your driver details & itinerary.
+                </p>
+
+                <button className="btn-primary" onClick={() => setShowCharterConfirmModal(false)}>
+                  Close & Done
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

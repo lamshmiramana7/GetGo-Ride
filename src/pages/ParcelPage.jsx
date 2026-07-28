@@ -6,7 +6,7 @@ import 'leaflet/dist/leaflet.css';
 import { Package, MapPin, ArrowLeft, Check, X } from 'lucide-react';
 import { MOCK_DRIVERS, SAVED_ADDRESSES, CHENNAI_LOCATIONS, PAYMENT_METHODS } from '../data/mockData';
 import { PARCEL_BANNER_BASE64 } from '../assets/mediaBase64';
-import { useLanguage } from '../App';
+import { useLanguage, useLocation } from '../App';
 
 // ─── Fix Leaflet icons ────────────────────────────────────────────────
 delete L.Icon.Default.prototype._getIconUrl;
@@ -29,7 +29,7 @@ const makePin = (color) => L.divIcon({
 const PICKUP_PIN = makePin('#2563EB');
 const DROP_PIN   = makePin('#DC2626');
 
-const makeBikeIcon = (bg = '#1B5E20', size = 40) => L.divIcon({
+const makeBikeIcon = (bg = '#1B5E20', size = 38) => L.divIcon({
   className: '',
   html: `<div style="background:${bg};border-radius:50%;width:${size}px;height:${size}px;display:flex;align-items:center;justify-content:center;border:3px solid white;box-shadow:0 4px 12px rgba(0,0,0,0.4);font-size:${Math.round(size * 0.5)}px">🛵</div>`,
   iconSize: [size, size], iconAnchor: [size / 2, size / 2],
@@ -104,10 +104,11 @@ function LiveParcelMap({ pickupCoords, dropCoords }) {
 export default function ParcelPage() {
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { userLocation } = useLocation();
 
   const [step, setStep] = useState('form'); // 'form' | 'confirm' | 'tracking'
-  const [pickup, setPickup]   = useState('');
-  const [dropoff, setDropoff] = useState('');
+  const [pickup, setPickup]   = useState(userLocation || 'Chennai Central Railway Station');
+  const [dropoff, setDropoff] = useState('T. Nagar (Pondy Bazaar), Chennai');
   const [pickupCoords, setPickupCoords] = useState({ lat: 13.0827, lng: 80.2707 });
   const [dropCoords, setDropCoords]     = useState({ lat: 13.0418, lng: 80.2341 });
   const [recipientName, setRecipientName]   = useState('');
@@ -180,9 +181,33 @@ export default function ParcelPage() {
         </div>
       </div>
 
-      {/* ══════════ STEP 1: FORM + MINI MAP ══════════ */}
+      {/* ══════════ STEP 1: FORM + ALWAYS-VISIBLE LIVE MAP ══════════ */}
       {step === 'form' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+
+          {/* ALWAYS VISIBLE LIVE ROUTE MAP */}
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', boxShadow: 'var(--shadow-flat)' }}>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <div style={{ backgroundColor: '#1B5E20', padding: '7px 14px', fontSize: 12, color: '#FFF', fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
+              <span>📍 Live Parcel Route Map</span>
+              <span style={{ fontWeight: 400, opacity: 0.85 }}>🛵 Nearby Couriers Active</span>
+            </div>
+            <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={13} style={{ height: 250, width: '100%' }} scrollWheelZoom={false}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={PICKUP_PIN} />
+              <Marker position={[dropCoords.lat, dropCoords.lng]} icon={DROP_PIN} />
+              {/* Nearby bike courier markers */}
+              {[[0.007, 0.009], [-0.008, 0.012], [0.005, -0.011]].map((off, idx) => (
+                <Marker key={idx} position={[pickupCoords.lat + off[0], pickupCoords.lng + off[1]]} icon={makeBikeIcon('#374151', 32)} />
+              ))}
+              <Polyline positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]} pathOptions={{ color: '#1B5E20', weight: 4, opacity: 0.75, dashArray: '9 5' }} />
+              <MapFit positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]} />
+            </MapContainer>
+            <div style={{ padding: '7px 14px', backgroundColor: 'var(--bg-secondary)', display: 'flex', gap: 16, fontSize: 12 }}>
+              <span>🔵 <strong>Pickup:</strong> {pickup}</span>
+              <span>🔴 <strong>Delivery:</strong> {dropoff}</span>
+            </div>
+          </div>
           {/* Banner */}
           <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
             <img src={PARCEL_BANNER_BASE64} alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -233,22 +258,7 @@ export default function ParcelPage() {
               )}
             </div>
 
-            {/* Mini Map showing route */}
-            {pickup && dropoff && (
-              <div style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)' }}>
-                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-                <div style={{ backgroundColor: '#1B5E20', padding: '5px 12px', fontSize: 11, color: '#FFF', fontWeight: 700 }}>
-                  📍 Route Preview
-                </div>
-                <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={13} style={{ height: 180, width: '100%' }} scrollWheelZoom={false} zoomControl={false}>
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
-                  <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={PICKUP_PIN} />
-                  <Marker position={[dropCoords.lat, dropCoords.lng]} icon={DROP_PIN} />
-                  <Polyline positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]} pathOptions={{ color: '#1B5E20', weight: 3.5, opacity: 0.7, dashArray: '8 5' }} />
-                  <MapFit positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]} />
-                </MapContainer>
-              </div>
-            )}
+
 
             {/* Recipient details */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

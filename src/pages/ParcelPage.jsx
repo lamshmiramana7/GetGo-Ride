@@ -208,14 +208,7 @@ export default function ParcelPage() {
               <span>🔴 <strong>Delivery:</strong> {dropoff}</span>
             </div>
           </div>
-          {/* Banner */}
-          <div style={{ height: 100, borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', position: 'relative' }}>
-            <img src={PARCEL_BANNER_BASE64} alt="Express Parcel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(15,23,42,0.88) 0%, rgba(15,23,42,0.3) 100%)', padding: '14px 18px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-              <div style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Express Parcel Delivery</div>
-              <div style={{ fontSize: 12, color: '#4ADE80', marginTop: 3 }}>Live GPS Tracked · Insured · Same Day</div>
-            </div>
-          </div>
+
 
           <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
             <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>Pickup & Delivery Details</h2>

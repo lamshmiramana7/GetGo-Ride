@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { MapContainer, TileLayer, Marker, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Polyline, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { Zap, Car, MapPin, ArrowLeft, Check, Phone, CreditCard, X, ChevronRight, Star, ShieldCheck, UserCheck } from 'lucide-react';
+import { Zap, Car, MapPin, ArrowLeft, Check, Phone, CreditCard, X, ChevronRight, Star, ShieldCheck, UserCheck, Navigation } from 'lucide-react';
 import { MOCK_DRIVERS, PAYMENT_METHODS, INDIAN_GEOGRAPHY, VEHICLE_CATEGORIES } from '../data/mockData';
 import { VEHICLE_BASE64 } from '../assets/vehicleBase64';
 import { DRIVER_AVATAR_BASE64 } from '../assets/mediaBase64';
@@ -30,11 +30,33 @@ const DROP_ICON = L.divIcon({
   iconSize: [16, 16], iconAnchor: [8, 8],
 });
 
-function MapController({ center }) {
+function MapController({ center, zoom = 13 }) {
   const map = useMap();
-  useEffect(() => { if (center) map.setView(center, 13); }, [center]);
+  useEffect(() => { if (center) map.setView(center, zoom); }, [center, zoom]);
   return null;
 }
+
+// Driver car icon for map
+const driverCarIcon = L.divIcon({
+  className: '',
+  html: `<div style="background:#1B5E20;border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 3px 10px rgba(0,0,0,0.35);font-size:18px">🚗</div>`,
+  iconSize: [36, 36],
+  iconAnchor: [18, 18],
+});
+
+const pickupMapIcon = L.divIcon({
+  className: '',
+  html: `<div style="position:relative"><svg viewBox='0 0 36 48' width='36' height='48' xmlns='http://www.w3.org/2000/svg'><path d='M18 0C8.06 0 0 8.06 0 18c0 13 16 29.5 17.4 31a1 1 0 001.2 0C20 47.5 36 31 36 18 36 8.06 27.94 0 18 0z' fill='#2563EB'/><circle cx='18' cy='18' r='8' fill='white'/></svg></div>`,
+  iconSize: [36, 48],
+  iconAnchor: [18, 48],
+});
+
+const dropMapIcon = L.divIcon({
+  className: '',
+  html: `<div style="position:relative"><svg viewBox='0 0 36 48' width='36' height='48' xmlns='http://www.w3.org/2000/svg'><path d='M18 0C8.06 0 0 8.06 0 18c0 13 16 29.5 17.4 31a1 1 0 001.2 0C20 47.5 36 31 36 18 36 8.06 27.94 0 18 0z' fill='#DC2626'/><circle cx='18' cy='18' r='8' fill='white'/></svg></div>`,
+  iconSize: [36, 48],
+  iconAnchor: [18, 48],
+});
 
 export default function RideBookingPage() {
   const navigate = useNavigate();
@@ -123,67 +145,69 @@ export default function RideBookingPage() {
 
       {/* ── STEP 1: PICKUP & DROPOFF LOCATION ── */}
       {step === 'location' && (
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>1. Pickup & Destination</h2>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            <div>
-              <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                Pickup Location
-              </label>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <MapPin size={18} color="#2563EB" style={{ position: 'absolute', left: 14 }} />
-                <input
-                  className="input-field"
-                  placeholder="Enter pickup address"
-                  value={pickup}
-                  onChange={e => setPickup(e.target.value)}
-                  style={{ paddingLeft: 42 }}
-                />
+          {/* LIVE MAP — shows pickup + drop pins */}
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', boxShadow: 'var(--shadow-flat)' }}>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <MapContainer
+              center={[pickupCoords.lat, pickupCoords.lng]}
+              zoom={13}
+              style={{ height: 260, width: '100%' }}
+              scrollWheelZoom={false}
+              zoomControl={true}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="© OpenStreetMap"
+              />
+              <MapController center={[pickupCoords.lat, pickupCoords.lng]} />
+              <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={pickupMapIcon} />
+              <Marker position={[dropCoords.lat, dropCoords.lng]} icon={dropMapIcon} />
+              <Polyline
+                positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]}
+                pathOptions={{ color: '#1B5E20', weight: 3, opacity: 0.7, dashArray: '8 5' }}
+              />
+            </MapContainer>
+            <div style={{ padding: '8px 14px', backgroundColor: 'var(--bg-secondary)', display: 'flex', gap: 16, fontSize: 12 }}>
+              <span>🔵 <strong>Pickup:</strong> {pickup}</span>
+              <span>🔴 <strong>Drop:</strong> {dropoff}</span>
+            </div>
+          </div>
+
+          <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <h2 className="text-section" style={{ color: 'var(--text-primary)' }}>1. Pickup & Destination</h2>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Pickup Location</label>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <MapPin size={18} color="#2563EB" style={{ position: 'absolute', left: 14 }} />
+                  <input className="input-field" placeholder="Enter pickup address" value={pickup} onChange={e => setPickup(e.target.value)} style={{ paddingLeft: 42 }} />
+                </div>
+              </div>
+              <div>
+                <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>Destination Address</label>
+                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                  <MapPin size={18} color="#DC2626" style={{ position: 'absolute', left: 14 }} />
+                  <input className="input-field" placeholder="Enter destination address" value={dropoff} onChange={e => setDropoff(e.target.value)} style={{ paddingLeft: 42 }} />
+                </div>
               </div>
             </div>
 
             <div>
-              <label className="text-caption" style={{ color: 'var(--text-secondary)', fontWeight: 600, display: 'block', marginBottom: 4 }}>
-                Destination Address
-              </label>
-              <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                <MapPin size={18} color="#DC2626" style={{ position: 'absolute', left: 14 }} />
-                <input
-                  className="input-field"
-                  placeholder="Enter destination address"
-                  value={dropoff}
-                  onChange={e => setDropoff(e.target.value)}
-                  style={{ paddingLeft: 42 }}
-                />
+              <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>Popular Destinations</div>
+              <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                {['T. Nagar, Chennai', 'Chennai Airport', 'Central Railway Station', 'OMR Tech Park', 'Tambaram Bus Stand'].map(loc => (
+                  <button key={loc} onClick={() => setDropoff(loc)} className={dropoff === loc ? 'badge-flat-green' : 'badge-flat'} style={{ cursor: 'pointer', fontSize: 13 }}>{loc}</button>
+                ))}
               </div>
             </div>
-          </div>
 
-          {/* All-India Quick Locations */}
-          <div>
-            <div className="text-caption" style={{ color: 'var(--text-muted)', marginBottom: 8 }}>Popular Destination Hotspots</div>
-            <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {['T. Nagar, Chennai', 'Chennai Airport', 'Central Railway Station', 'OMR Tech Park', 'Tambaram Bus Stand'].map(loc => (
-                <button
-                  key={loc}
-                  onClick={() => setDropoff(loc)}
-                  className={dropoff === loc ? 'badge-flat-green' : 'badge-flat'}
-                  style={{ cursor: 'pointer', fontSize: 13 }}
-                >
-                  {loc}
-                </button>
-              ))}
-            </div>
+            <button className="btn-primary" onClick={() => setStep('vehicle')} disabled={!pickup.trim() || !dropoff.trim()}>
+              Choose Vehicle Category →
+            </button>
           </div>
-
-          <button
-            className="btn-primary"
-            onClick={() => setStep('vehicle')}
-            disabled={!pickup.trim() || !dropoff.trim()}
-          >
-            Choose Vehicle Category →
-          </button>
         </div>
       )}
 
@@ -245,6 +269,31 @@ export default function RideBookingPage() {
             <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
               Nearby available drivers for {selectedCategory.toUpperCase()} near {pickup}
             </p>
+          </div>
+
+          {/* DRIVER LOCATIONS MAP */}
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--border)', boxShadow: 'var(--shadow-flat)' }}>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <MapContainer center={[pickupCoords.lat, pickupCoords.lng]} zoom={13} style={{ height: 220, width: '100%' }} scrollWheelZoom={false}>
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              {/* Pickup marker */}
+              <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={pickupMapIcon} />
+              {/* Nearby driver pins (offset randomly around pickup) */}
+              {availableDrivers.slice(0, 4).map((dr, i) => {
+                const offsets = [[0.008, 0.012], [-0.010, 0.007], [0.005, -0.014], [-0.006, -0.009]];
+                const pos = [pickupCoords.lat + (offsets[i] || [0, 0])[0], pickupCoords.lng + (offsets[i] || [0, 0])[1]];
+                const carIcon = L.divIcon({
+                  className: '',
+                  html: `<div style="background:${selectedDriver?.id === dr.id ? '#1B5E20' : '#374151'};border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);font-size:16px">🚗</div>`,
+                  iconSize: [32, 32],
+                  iconAnchor: [16, 16],
+                });
+                return <Marker key={dr.id} position={pos} icon={carIcon} />;
+              })}
+            </MapContainer>
+            <div style={{ padding: '6px 14px', backgroundColor: 'var(--bg-secondary)', fontSize: 11, color: 'var(--text-muted)' }}>
+              🟢 Green = selected driver · ⚫ Grey = other nearby drivers · 🔵 Blue = your pickup
+            </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
@@ -363,31 +412,71 @@ export default function RideBookingPage() {
 
       {/* ── STEP 5: LIVE RIDE TRACKING ── */}
       {step === 'tracking' && selectedDriver && (
-        <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div style={{ textAlign: 'center' }}>
-            <span className="badge-flat-green"><Check size={14} /> Driver Confirmed</span>
-            <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>
-              {selectedDriver.name} is on the way!
-            </h2>
-            <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
-              Arriving in 3 mins · Vehicle: {selectedDriver.vehicleNo} ({selectedDriver.vehicleModel})
-            </p>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
 
-          <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Total Ride Amount</div>
-              <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand-green-text)' }}>₹{fareBreakdown.totalFare}</div>
-              <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>Paid via {paymentMethod.label}</div>
+          {/* LIVE TRACKING MAP */}
+          <div style={{ borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '2px solid var(--brand-green)', boxShadow: 'var(--shadow-flat)' }}>
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+            <div style={{ backgroundColor: '#1B5E20', padding: '6px 14px', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#4ADE80', display: 'inline-block', animation: 'pulse 1.5s infinite' }} />
+              <span style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 700 }}>🚗 LIVE — {selectedDriver.name} is heading to your pickup</span>
             </div>
-            <button className="btn-primary" onClick={() => setShowReceipt(true)}>
-              View Receipt
-            </button>
+            <MapContainer
+              center={[pickupCoords.lat + 0.005, pickupCoords.lng + 0.008]}
+              zoom={14}
+              style={{ height: 300, width: '100%' }}
+              scrollWheelZoom={false}
+            >
+              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap" />
+              {/* Your pickup (blue) */}
+              <Marker position={[pickupCoords.lat, pickupCoords.lng]} icon={pickupMapIcon} />
+              {/* Your drop (red) */}
+              <Marker position={[dropCoords.lat, dropCoords.lng]} icon={dropMapIcon} />
+              {/* Driver (green car, slightly offset approaching pickup) */}
+              <Marker
+                position={[pickupCoords.lat + 0.009, pickupCoords.lng + 0.011]}
+                icon={driverCarIcon}
+              />
+              {/* Route line pickup → drop */}
+              <Polyline
+                positions={[[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]]}
+                pathOptions={{ color: '#1B5E20', weight: 4, opacity: 0.6, dashArray: '10 6' }}
+              />
+              {/* Driver → Pickup approach line */}
+              <Polyline
+                positions={[[pickupCoords.lat + 0.009, pickupCoords.lng + 0.011], [pickupCoords.lat, pickupCoords.lng]]}
+                pathOptions={{ color: '#F59E0B', weight: 3, opacity: 0.9 }}
+              />
+            </MapContainer>
+            <div style={{ padding: '6px 14px', backgroundColor: 'var(--bg-secondary)', fontSize: 11, color: 'var(--text-muted)', display: 'flex', gap: 16 }}>
+              <span>🔵 Your Pickup</span>
+              <span>🔴 Destination</span>
+              <span>🚗 Driver approaching (~3 min)</span>
+            </div>
           </div>
 
-          <button className="btn-secondary" onClick={() => navigate('/')}>
-            Back to Home Dashboard
-          </button>
+          <div className="flat-card" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ textAlign: 'center' }}>
+              <span className="badge-flat-green"><Check size={14} /> Driver Confirmed</span>
+              <h2 className="text-section" style={{ color: 'var(--text-primary)', marginTop: 8 }}>
+                {selectedDriver.name} is on the way!
+              </h2>
+              <p className="text-caption" style={{ color: 'var(--text-secondary)' }}>
+                Arriving in 3 mins · {selectedDriver.vehicleNo} ({selectedDriver.vehicleModel})
+              </p>
+            </div>
+
+            <div style={{ backgroundColor: 'var(--bg-secondary)', padding: 16, borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Total Ride Amount</div>
+                <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--brand-green-text)' }}>₹{fareBreakdown.totalFare}</div>
+                <div style={{ fontSize: 12, color: 'var(--text-secondary)', marginTop: 2 }}>Paid via {paymentMethod.label}</div>
+              </div>
+              <button className="btn-primary" onClick={() => setShowReceipt(true)}>View Receipt</button>
+            </div>
+
+            <button className="btn-secondary" onClick={() => navigate('/')}>Back to Home Dashboard</button>
+          </div>
         </div>
       )}
 
